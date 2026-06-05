@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 423.66 573.54" role="img" aria-label="Never ending story">
+  <style>
+    .stroke {
+      fill: none;
+      stroke: #2f2924;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 8.5;
+      stroke-dasharray: 1;
+      stroke-dashoffset: 1;
+      animation: draw var(--duration) cubic-bezier(.42, 0, .18, 1) forwards var(--delay);
+      filter: drop-shadow(0 2px 1px rgba(216, 168, 92, .12));
+    }
+
+    .stroke.n { stroke-width: 9.5; }
+    .stroke.ever { stroke-width: 8; }
+    .stroke.ending { stroke-width: 8.5; }
+    .stroke.story { stroke-width: 9; }
+
+    .dot {
+      fill: #2f2924;
+      opacity: 0;
+      transform-origin: 213.5px 287.8px;
+      transform: scale(.25);
+      animation: dotIn .2s ease-out forwards 6.5s;
+    }
+
+    @keyframes draw {
+      to { stroke-dashoffset: 0; }
+    }
+
+    @keyframes dotIn {
+      to { opacity: 1; transform: scale(1); }
+    }
+  </style>
+
+  <path class="stroke n" pathLength="1" style="--delay:.15s; --duration:1.45s"
+    d="M31 140 C37 105 47 65 67 29 C62 72 60 126 78 151 C101 122 120 60 139 4" />
+
+  <path class="stroke ever" pathLength="1" style="--delay:1.45s; --duration:1.65s"
+    d="M139 96 C153 89 155 101 142 101 C133 101 133 116 148 116 C166 116 184 103 196 96 C203 119 220 116 229 96 C231 113 246 115 264 104 C276 97 294 102 287 113 C277 129 304 120 323 107 C336 98 349 88 345 88 C337 100 338 114 346 116 C361 117 382 106 397 95" />
+
+  <path class="stroke ending" pathLength="1" style="--delay:3s; --duration:3.65s"
+    d="M5 302 C19 292 26 299 17 302 C6 306 9 317 26 312 C39 309 51 301 59 292 C56 308 57 313 61 313 C70 302 79 292 84 303 C89 316 103 310 122 302 C135 296 146 289 152 287 C154 260 174 224 186 225 C196 228 187 253 156 296 C158 315 178 315 204 300 C208 304 216 311 228 308 C241 305 253 298 264 292 C261 308 262 313 266 313 C275 302 284 292 290 303 C296 316 311 310 330 301 C344 294 354 291 354 291 C364 297 361 321 350 342 C337 368 316 394 296 390 C281 385 290 360 312 344 C329 332 355 324 383 315 C404 307 418 298 423 294" />
+
+  <circle class="dot" cx="213.5" cy="287.8" r="6.6" />
+
+  <path class="stroke story" pathLength="1" style="--delay:6.85s; --duration:3.25s"
+    d="M49 520 C58 497 91 469 117 456 C103 455 88 456 78 461 C93 449 114 433 127 406 C119 431 91 523 89 572 C99 538 118 496 137 493 C127 505 132 508 140 501 C146 501 166 501 193 495 C190 506 192 517 199 516 C216 516 239 502 249 495 C242 505 248 515 260 510 C271 506 278 495 275 486 C282 506 268 543 247 562 C236 573 228 568 235 557 C247 539 292 519 333 494" />
+</svg>
