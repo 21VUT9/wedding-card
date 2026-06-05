@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
   <title>The Beginning of Us</title>
   <script type="module" src="https://unpkg.com/@dotlottie/player-component@latest/dist/dotlottie-player.mjs"></script>
   <style>
@@ -31,11 +31,17 @@
       font-family: Georgia, 'Times New Roman', 'Noto Serif KR', serif;
       color: var(--ink);
       background: #e9e2da;
+      touch-action: pan-y;
     }
 
     body {
       display: flex;
       justify-content: center;
+    }
+
+    body.intro-locked {
+      overflow: hidden;
+      height: 100vh;
     }
 
     .phone-shell {
@@ -52,10 +58,199 @@
       .phone-shell { box-shadow: none; }
     }
 
+    .music-toggle {
+      position: fixed;
+      top: 16px;
+      right: max(16px, calc((100vw - 430px) / 2 + 16px));
+      z-index: 100;
+      width: 24px;
+      height: 24px;
+      border: 1px solid rgba(47, 41, 36, .18);
+      border-radius: 999px;
+      background: rgba(31, 31, 31, .78);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      line-height: 1;
+      box-shadow: 0 8px 24px rgba(45, 36, 28, .16);
+      backdrop-filter: blur(10px);
+      cursor: pointer;
+      overflow: visible;
+    }
+
+    .music-toggle .play-icon {
+      display: none;
+      width: 0;
+      height: 0;
+      margin-left: 1px;
+      border-top: 4px solid transparent;
+      border-bottom: 4px solid transparent;
+      border-left: 7px solid currentColor;
+    }
+
+    .music-toggle .equalizer {
+      display: flex;
+      align-items: end;
+      justify-content: center;
+      gap: 1.5px;
+      width: 12px;
+      height: 12px;
+    }
+
+    .music-toggle .equalizer span {
+      width: 2px;
+      height: 4px;
+      border-radius: 999px;
+      background: currentColor;
+      animation: musicBar .72s ease-in-out infinite;
+    }
+
+    .music-toggle::before,
+    .music-toggle::after {
+      content: '';
+      position: absolute;
+      inset: -5px;
+      border-radius: inherit;
+      pointer-events: none;
+      opacity: 0;
+    }
+
+    .music-toggle::before {
+      border: 1px solid rgba(255, 255, 255, .8);
+    }
+
+    .music-toggle::after {
+      background: radial-gradient(circle, rgba(255, 255, 255, .95) 0 12%, transparent 14% 100%);
+      transform: translate(5px, -5px) scale(.2);
+    }
+
+    .music-toggle.is-popping {
+      animation: musicPop .38s cubic-bezier(.2, 1.6, .4, 1);
+    }
+
+    .music-toggle.is-popping::before {
+      animation: musicRing .48s ease-out;
+    }
+
+    .music-toggle.is-popping::after {
+      animation: musicSpark .48s ease-out;
+    }
+
+    .music-toggle .equalizer span:nth-child(2) {
+      animation-delay: .14s;
+    }
+
+    .music-toggle .equalizer span:nth-child(3) {
+      animation-delay: .28s;
+    }
+
+    .music-toggle .equalizer span:nth-child(4) {
+      animation-delay: .42s;
+    }
+
+    .music-toggle[aria-pressed="false"] .equalizer {
+      display: none;
+    }
+
+    .music-toggle[aria-pressed="false"] .play-icon {
+      display: block;
+    }
+
+    @keyframes musicBar {
+      0%, 100% { height: 4px; opacity: .78; }
+      50% { height: 10px; opacity: 1; }
+    }
+
+    .heart-pop {
+      position: fixed;
+      z-index: 120;
+      width: 8px;
+      height: 8px;
+      background: #f4a4b8;
+      transform: translate(-50%, -50%) rotate(45deg) scale(.35);
+      pointer-events: none;
+      animation: heartFloat .78s ease-out forwards;
+      box-shadow: 0 3px 10px rgba(228, 111, 142, .18);
+    }
+
+    .heart-pop::before,
+    .heart-pop::after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: inherit;
+    }
+
+    .heart-pop::before {
+      left: -4px;
+      top: 0;
+    }
+
+    .heart-pop::after {
+      left: 0;
+      top: -4px;
+    }
+
+    @keyframes musicPop {
+      0% { transform: scale(1); }
+      45% { transform: scale(1.28); }
+      100% { transform: scale(1); }
+    }
+
+    @keyframes musicRing {
+      0% { opacity: .9; transform: scale(.72); }
+      100% { opacity: 0; transform: scale(1.45); }
+    }
+
+    @keyframes musicSpark {
+      0% { opacity: 0; transform: translate(3px, -3px) scale(.2); }
+      35% { opacity: 1; transform: translate(6px, -6px) scale(1); }
+      100% { opacity: 0; transform: translate(9px, -9px) scale(.15); }
+    }
+
+    @keyframes heartFloat {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) rotate(45deg) scale(.28);
+      }
+      18% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+        transform: translate(calc(-50% + var(--x)), calc(-50% - var(--y))) rotate(45deg) scale(var(--s));
+      }
+    }
+
+    .music-toast {
+      position: fixed;
+      top: 18px;
+      left: 50%;
+      z-index: 101;
+      transform: translate(-50%, -12px);
+      padding: 9px 14px;
+      border-radius: 999px;
+      background: rgba(47, 41, 36, .86);
+      color: #fff;
+      font-size: 12px;
+      letter-spacing: .02em;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      animation: musicToast 3.2s ease forwards .35s;
+    }
+
+    @keyframes musicToast {
+      12%, 78% { opacity: 1; transform: translate(-50%, 0); }
+      to { opacity: 0; transform: translate(-50%, -12px); }
+    }
+
     .intro {
       position: relative;
       min-height: 100vh;
-      background: #fff;
+      background: url('images/back.png') center/cover no-repeat;
       overflow: hidden;
       display: grid;
       place-items: center;
@@ -63,29 +258,29 @@
       color: #2f2924;
     }
 
-    .intro::before,
+    .intro::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255, 255, 255, .75);
+      z-index: 1;
+      pointer-events: none;
+    }
+
     .intro::after {
       content: '';
       position: absolute;
       width: 220px;
       height: 220px;
       border-radius: 999px;
-      background: rgba(232, 199, 189, .16);
-      filter: blur(28px);
-      opacity: 0;
-      animation: softBloom 2.8s ease forwards 2.6s;
-    }
-
-    .intro::before {
-      top: 14%;
-      right: -92px;
-    }
-
-    .intro::after {
       bottom: 12%;
       left: -98px;
       background: rgba(216, 168, 92, .12);
-      animation-delay: 3s;
+      filter: blur(28px);
+      opacity: 0;
+      z-index: 1;
+      pointer-events: none;
+      animation: softBloom 2.8s ease forwards 3s;
     }
 
     @keyframes softBloom {
@@ -279,6 +474,15 @@
 </head>
 <body>
   <main class="phone-shell">
+    <audio id="bgm" src="sounds/스매쉬-01-Never Ending Story.mp3" preload="auto" autoplay loop></audio>
+    <button class="music-toggle" type="button" aria-label="배경음악 끄기" aria-pressed="true">
+      <span class="play-icon" aria-hidden="true"></span>
+      <span class="equalizer" aria-hidden="true">
+        <span></span><span></span><span></span><span></span>
+      </span>
+    </button>
+    <div class="music-toast" role="status" aria-live="polite">배경음악이준비되었습니다</div>
+
     <section class="intro" aria-label="wedding intro">
       <div class="handwriting" aria-label="Never ending story">
         <dotlottie-player class="story-image" src="effect/Never%20ending%20story.lottie?v=2" background="transparent" speed="1.26" autoplay aria-label="Never ending story"></dotlottie-player>
@@ -343,5 +547,120 @@
       <div class="signature">민준 ♥ 서연</div>
     </section>
   </main>
+  <script>
+    const bgm = document.getElementById('bgm');
+    const musicToggle = document.querySelector('.music-toggle');
+    const storyPlayer = document.querySelector('.story-image');
+    const introLockFallback = 4000;
+    const scrollKeys = new Set(['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', 'Home', 'End', ' ']);
+    let introLocked = true;
+
+    document.addEventListener('contextmenu', (event) => {
+      event.preventDefault();
+    });
+
+    document.body.classList.add('intro-locked');
+    window.scrollTo(0, 0);
+
+    const preventIntroScroll = (event) => {
+      if (!introLocked) return;
+      event.preventDefault();
+      window.scrollTo(0, 0);
+    };
+
+    window.addEventListener('wheel', preventIntroScroll, { passive: false });
+    window.addEventListener('touchmove', preventIntroScroll, { passive: false });
+    window.addEventListener('keydown', (event) => {
+      if (introLocked && scrollKeys.has(event.key)) {
+        event.preventDefault();
+      }
+    });
+
+    const unlockIntroScroll = () => {
+      if (!introLocked) return;
+      introLocked = false;
+      document.body.classList.remove('intro-locked');
+      window.removeEventListener('wheel', preventIntroScroll);
+      window.removeEventListener('touchmove', preventIntroScroll);
+    };
+
+    storyPlayer.addEventListener('complete', unlockIntroScroll);
+    storyPlayer.addEventListener('finish', unlockIntroScroll);
+    window.setTimeout(unlockIntroScroll, introLockFallback);
+
+    bgm.volume = 0.45;
+    bgm.muted = false;
+    bgm.currentTime = 0;
+
+    const setMusicState = (isPlaying) => {
+      musicToggle.setAttribute('aria-pressed', String(isPlaying));
+      musicToggle.setAttribute('aria-label', isPlaying ? '배경음악 끄기' : '배경음악 켜기');
+    };
+
+    const playBgm = () => {
+      if (bgm.ended) {
+        bgm.currentTime = 0;
+      }
+      bgm.play()
+        .then(() => setMusicState(true))
+        .catch(() => {
+          setMusicState(true);
+          document.addEventListener('pointerdown', playBgm, { once: true });
+        });
+    };
+
+    const popHearts = (originX, originY) => {
+      const hearts = [
+        { x: '-9px', y: '28px', s: '.85' },
+        { x: '1px', y: '36px', s: '1' },
+        { x: '11px', y: '27px', s: '.72' },
+      ];
+
+      hearts.forEach((heart, index) => {
+        const el = document.createElement('span');
+        el.className = 'heart-pop';
+        el.style.left = `${originX}px`;
+        el.style.top = `${originY}px`;
+        el.style.setProperty('--x', heart.x);
+        el.style.setProperty('--y', heart.y);
+        el.style.setProperty('--s', heart.s);
+        el.style.animationDelay = `${index * 0.06}s`;
+        document.body.appendChild(el);
+        el.addEventListener('animationend', () => el.remove(), { once: true });
+      });
+    };
+
+    window.addEventListener('load', () => {
+      bgm.pause();
+      bgm.load();
+      bgm.muted = false;
+      bgm.currentTime = 0;
+      setMusicState(true);
+      playBgm();
+    });
+
+    document.addEventListener('pointerdown', (event) => {
+      popHearts(event.clientX, event.clientY);
+    });
+
+    musicToggle.addEventListener('click', () => {
+      musicToggle.classList.remove('is-popping');
+      void musicToggle.offsetWidth;
+      musicToggle.classList.add('is-popping');
+
+      if (bgm.paused) {
+        playBgm();
+      } else {
+        bgm.pause();
+        setMusicState(false);
+      }
+    });
+
+    musicToggle.addEventListener('animationend', (event) => {
+      if (event.animationName === 'musicPop') {
+        musicToggle.classList.remove('is-popping');
+      }
+    });
+  </script>
 </body>
 </html>
