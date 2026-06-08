@@ -59,6 +59,7 @@
 
     .custom-scrollbar {
       --scroll-thumb-y: 0px;
+      --scroll-thumb-x: -4px;
       position: fixed;
       top: 14px;
       bottom: 14px;
@@ -81,7 +82,7 @@
       width: 64px;
       height: 64px;
       background: transparent url('images/scroll_thumb.png') center center / contain no-repeat;
-      transform: translate(-50%, var(--scroll-thumb-y));
+      transform: translate(calc(-50% + var(--scroll-thumb-x)), var(--scroll-thumb-y));
       will-change: transform;
     }
 
@@ -337,7 +338,7 @@
       content: '';
       position: absolute;
       inset: 0;
-      background: rgba(255, 255, 255, .3);
+      background: transparent;
       z-index: 1;
       pointer-events: none;
     }
@@ -613,6 +614,8 @@
     }
 
     .photo-box img {
+      position: absolute;
+      inset: 0;
       display: block;
       width: 100%;
       height: 100%;
@@ -621,10 +624,48 @@
       object-position: center;
     }
 
+    .photo-morph {
+      opacity: 0;
+      transform: scale(1.035);
+      transition: opacity 1.4s ease, transform 4.8s cubic-bezier(.16, 1, .3, 1), filter 4.8s ease;
+    }
+
+    .photo-morph.pre-image {
+      z-index: 1;
+      opacity: 1;
+      transform: scale(1);
+      filter: blur(0);
+      transition: opacity .9s ease, transform .32s ease, filter .32s ease;
+    }
+
+    .photo-morph.final-image {
+      z-index: 2;
+      opacity: 0;
+      transform: scale(1.02);
+      filter: blur(2px) saturate(.72);
+      transition: opacity 3.5s ease, transform 4.8s cubic-bezier(.16, 1, .3, 1), filter 4.8s ease;
+    }
+
+    .photo-box.is-resetting .photo-morph {
+      transition: opacity .32s ease, transform .32s ease, filter .32s ease;
+    }
+
+    .photo-box.is-morphed .photo-morph.final-image {
+      opacity: 1;
+      transform: scale(1);
+      filter: blur(0) saturate(1);
+    }
+
+    .photo-box.is-morphed .photo-morph.pre-image {
+      opacity: 0;
+      transition-delay: 2.55s;
+    }
+
     .photo-date {
       position: absolute;
       top: 78px;
       left: 50%;
+      z-index: 3;
       width: min(68%, 292px);
       padding: 12px 0;
       text-align: center;
@@ -825,7 +866,8 @@
 
     <section class="hero-photo">
       <div class="photo-box">
-        <img src="images/sub-1.jpg" alt="" />
+        <img class="photo-morph pre-image" src="images/sub-1_pre.png" alt="" />
+        <img class="photo-morph final-image" src="images/sub-1.jpg" alt="" />
         <div class="photo-date">
           <p>
             2026년 9월 13일 일요일 12시<br>
@@ -878,6 +920,7 @@
     const waxHitArea = document.querySelector('.wax-hit-area');
     const storyPlayer = document.querySelector('.story-image');
     const introMessage = document.querySelector('.intro-message');
+    const photoBox = document.querySelector('.photo-box');
     const customScrollbar = document.querySelector('.custom-scrollbar');
     const customScrollThumb = document.querySelector('.custom-scrollbar-thumb');
     const storyActiveDuration = 4100;
@@ -887,6 +930,7 @@
     let introOpened = false;
     let storyFinished = false;
     let storyFinishTimer;
+    let photoMorphTimer;
 
     document.addEventListener('contextmenu', (event) => {
       event.preventDefault();
@@ -1073,6 +1117,32 @@
       revealMessage.observe(introMessage);
     } else if (introMessage) {
       introMessage.classList.add('is-visible');
+    }
+
+    if ('IntersectionObserver' in window && photoBox) {
+      const morphPhoto = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          window.clearTimeout(photoMorphTimer);
+
+          if (!entry.isIntersecting || entry.intersectionRatio < 0.34) {
+            photoBox.classList.add('is-resetting');
+            photoBox.classList.remove('is-morphed');
+            window.setTimeout(() => {
+              photoBox.classList.remove('is-resetting');
+            }, 360);
+            return;
+          }
+
+          photoBox.classList.remove('is-resetting');
+          photoMorphTimer = window.setTimeout(() => {
+            photoBox.classList.add('is-morphed');
+          }, 1300);
+        });
+      }, { threshold: [0, 0.34] });
+
+      morphPhoto.observe(photoBox);
+    } else if (photoBox) {
+      photoBox.classList.add('is-morphed');
     }
 
     waxHitArea.addEventListener('pointerenter', () => {
