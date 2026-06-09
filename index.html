@@ -1,15 +1,15 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
-  <meta name="description" content="26년 9월 13일 일요일 12시&#10;JK아트컨벤션 4층 아트리움" />
+  <meta name="description" content="26년 9월 13일 일요일 12시&#13;&#10;JK아트컨벤션 4층 아트리움" />
   <meta property="og:title" content="병구&지혜의 청첩장이 도착했습니다." />
-  <meta property="og:description" content="26년 9월 13일 일요일 12시&#10;JK아트컨벤션 4층 아트리움" />
+  <meta property="og:description" content="26년 9월 13일 일요일 12시&#13;&#10;JK아트컨벤션 4층 아트리움" />
   <meta property="og:image" content="https://wedding-card-2b522.web.app/images/letter_bag.png" />
   <meta property="og:image:secure_url" content="https://wedding-card-2b522.web.app/images/letter_bag.png" />
   <meta name="twitter:title" content="병구&지혜의 청첩장이 도착했습니다." />
-  <meta name="twitter:description" content="26년 9월 13일 일요일 12시&#10;JK아트컨벤션 4층 아트리움" />
+  <meta name="twitter:description" content="26년 9월 13일 일요일 12시&#13;&#10;JK아트컨벤션 4층 아트리움" />
   <meta name="twitter:image" content="https://wedding-card-2b522.web.app/images/letter_bag.png" />
   <title>병구&지혜의 청첩장이 도착했습니다.</title>
   <link rel="icon" type="image/png" href="images/pob.png" />
@@ -24,13 +24,21 @@
       font-display: swap;
     }
 
+    @font-face {
+      font-family: 'Noto Sans KR';
+      src: url('font/NotoSansKR-VariableFont_wght.ttf') format('truetype');
+      font-weight: 100 900;
+      font-style: normal;
+      font-display: swap;
+    }
+
     :root {
-      --paper: #fffaf3;
-      --ink: #3b3028;
-      --muted: #8a7768;
-      --gold: #d8a85c;
-      --rose: #e8c7bd;
-      --night: #151826;
+      --paper: #f5f9fc;
+      --ink: #243447;
+      --muted: #6f8396;
+      --gold: #6f9fbd;
+      --rose: #c9dbe8;
+      --night: #152237;
     }
 
     * {
@@ -89,9 +97,9 @@
     html, body {
       margin: 0;
       min-height: 100%;
-      font-family: Georgia, 'Times New Roman', 'Noto Serif KR', serif;
+      font-family: 'Noto Sans KR', Georgia, 'Times New Roman', sans-serif;
       color: var(--ink);
-      background: #e9e2da;
+      background: #dfe9f2;
       touch-action: pan-y;
     }
 
@@ -112,7 +120,7 @@
       background: var(--paper);
       overflow: hidden;
       position: relative;
-      box-shadow: 0 0 38px rgba(45, 36, 28, 0.18);
+      box-shadow: 0 0 38px rgba(36, 52, 71, 0.16);
     }
 
     @media (max-width: 430px) {
@@ -126,14 +134,14 @@
       z-index: 100;
       width: 24px;
       height: 24px;
-      border: 1px solid rgba(47, 41, 36, .18);
+      border: 1px solid rgba(50, 72, 96, .2);
       border-radius: 999px;
       background: rgba(31, 31, 31, .78);
       color: #fff;
       display: grid;
       place-items: center;
       line-height: 1;
-      box-shadow: 0 8px 24px rgba(45, 36, 28, .16);
+      box-shadow: 0 8px 24px rgba(36, 52, 71, .16);
       backdrop-filter: blur(10px);
       cursor: pointer;
       overflow: visible;
@@ -303,7 +311,7 @@
       transform: translate(-50%, -12px);
       padding: 9px 14px;
       border-radius: 999px;
-      background: rgba(47, 41, 36, .86);
+      background: rgba(36, 52, 71, .88);
       color: #fff;
       font-size: 12px;
       letter-spacing: .02em;
@@ -331,7 +339,7 @@
       display: grid;
       place-items: center;
       text-align: center;
-      color: #2f2924;
+      color: #243447;
     }
 
     .intro::before {
@@ -351,7 +359,7 @@
       border-radius: 999px;
       bottom: 12%;
       left: -98px;
-      background: rgba(216, 168, 92, .12);
+      background: rgba(111, 159, 189, .14);
       filter: blur(28px);
       opacity: 0;
       z-index: 1;
@@ -475,29 +483,33 @@
       position: relative;
       z-index: 1;
       width: min(94%, 390px);
-      height: min(72vh, 600px);
-      display: grid;
-      place-items: center;
+      width: min(94%, 390px, calc((100svh - 112px) * .65));
+      max-width: 390px;
+      aspect-ratio: 13 / 20;
+      max-height: calc(100svh - 112px);
       overflow: visible;
     }
 
     .story-image {
+      position: absolute;
+      inset: 0;
       display: block;
       width: 100%;
-      height: min(72vh, 600px);
+      height: 100%;
       object-fit: contain;
-      transform: translateY(-3vh) scale(1.5);
+      transform: translateY(-4.2%) scale(1.5);
       transform-origin: center;
     }
 
     .move-text-video {
-      position: relative;
-      top: 37.5px;
+      position: absolute;
+      inset: 0;
+      top: 6.25%;
       display: none;
       width: 100%;
-      height: min(72vh, 600px);
+      height: 100%;
       object-fit: contain;
-      transform: translateY(4vh) scale(1.50);
+      transform: translateY(4.8%) scale(1.305);
       transform-origin: center;
     }
 
@@ -517,7 +529,7 @@
       z-index: 5;
       font-size: 11px;
       letter-spacing: .18em;
-      color: rgba(47,41,36,.46);
+      color: rgba(36, 52, 71, .48);
       animation: bounce 1.4s ease-in-out infinite;
       opacity: 0;
       transition: opacity .8s ease;
@@ -550,8 +562,8 @@
       align-items: center;
       gap: 28px;
       padding: 58px 34px 64px;
-      background: #fff;
-      color: #3f3630;
+      background: #f7fbfe;
+      color: #243447;
     }
 
     .intro-message .ring-divider {
@@ -601,7 +613,7 @@
       font-size: 15px;
       line-height: 2.05;
       letter-spacing: -.01em;
-      font-family: 'Noto Serif KR', Georgia, 'Times New Roman', serif;
+      font-family: 'Noto Sans KR', Georgia, 'Times New Roman', sans-serif;
       word-break: keep-all;
     }
 
@@ -616,7 +628,7 @@
       font-weight: 700;
       letter-spacing: -.01em;
       color: #2f2924;
-      font-family: 'Noto Serif KR', Georgia, 'Times New Roman', serif;
+      font-family: 'Noto Sans KR', Georgia, 'Times New Roman', sans-serif;
     }
 
     .hero-photo {
@@ -627,9 +639,9 @@
 
     .photo-box {
       position: relative;
-      min-height: 640px;
+      aspect-ratio: 1626 / 1365;
       overflow: hidden;
-      background: #f8f4ee;
+      background: #eef5fa;
     }
 
     .photo-box img {
@@ -638,83 +650,8 @@
       display: block;
       width: 100%;
       height: 100%;
-      min-height: 640px;
       object-fit: cover;
       object-position: center;
-    }
-
-    .photo-morph {
-      opacity: 0;
-      transform: scale(1.035);
-      transition: opacity 1.4s ease, transform 4.8s cubic-bezier(.16, 1, .3, 1), filter 4.8s ease;
-    }
-
-    .photo-morph.pre-image {
-      z-index: 1;
-      opacity: 1;
-      transform: scale(1);
-      filter: blur(0);
-      transition: opacity .9s ease, transform .32s ease, filter .32s ease;
-    }
-
-    .photo-morph.final-image {
-      z-index: 2;
-      opacity: 0;
-      transform: scale(1.02);
-      filter: blur(2px) saturate(.72);
-      transition: opacity 3.5s ease, transform 4.8s cubic-bezier(.16, 1, .3, 1), filter 4.8s ease;
-    }
-
-    .photo-box.is-resetting .photo-morph {
-      transition: opacity .32s ease, transform .32s ease, filter .32s ease;
-    }
-
-    .photo-box.is-morphed .photo-morph.final-image {
-      opacity: 1;
-      transform: scale(1);
-      filter: blur(0) saturate(1);
-    }
-
-    .photo-box.is-morphed .photo-morph.pre-image {
-      opacity: 0;
-      transition-delay: 2.55s;
-    }
-
-    .photo-date {
-      position: absolute;
-      top: 78px;
-      left: 50%;
-      z-index: 3;
-      width: min(68%, 292px);
-      padding: 12px 0;
-      text-align: center;
-      color: #181512;
-      font-family: 'Noto Serif KR', Georgia, 'Times New Roman', serif;
-      font-size: 14px;
-      line-height: 1.9;
-      letter-spacing: -.01em;
-      text-shadow: 0 1px 8px rgba(255, 255, 255, .38);
-      transform: translateX(-50%);
-    }
-
-    .photo-date::before,
-    .photo-date::after {
-      content: '';
-      display: block;
-      height: 1px;
-      background: rgba(24, 21, 18, .78);
-    }
-
-    .photo-date::before {
-      margin-bottom: 10px;
-    }
-
-    .photo-date::after {
-      margin-top: 10px;
-    }
-
-    .photo-date p {
-      margin: 0;
     }
 
     .message h3, .info h3, .wedding-day h3, .location h3, .gallery h3, .ending h3 {
@@ -726,7 +663,7 @@
     .message p {
       font-size: 15px;
       line-height: 2.05;
-      color: #5f5148;
+      color: #52697f;
       margin: 0;
     }
 
@@ -739,16 +676,16 @@
     .divider {
       width: 1px;
       height: 54px;
-      background: #d8c7b5;
+      background: #c6d7e4;
       margin: 0 auto 26px;
     }
 
     .date-card {
-      background: #fff;
-      border: 1px solid #eaded0;
+      background: #f9fcff;
+      border: 1px solid #d7e4ee;
       padding: 30px 20px;
       border-radius: 26px;
-      box-shadow: 0 18px 36px rgba(77, 55, 36, .08);
+      box-shadow: 0 18px 36px rgba(52, 78, 101, .08);
     }
 
     .date-card .month {
@@ -772,13 +709,13 @@
 
     .wedding-day {
       padding: 72px 34px 70px;
-      background: #fff;
-      color: #3f3630;
+      background: #f7fbfe;
+      color: #243447;
     }
 
     .wedding-day h3 {
       margin-bottom: 30px;
-      color: #9f978f;
+      color: #8298aa;
       font-size: 24px;
       letter-spacing: .04em;
       text-transform: uppercase;
@@ -786,7 +723,7 @@
 
     .wedding-date-main {
       margin: 0;
-      font-family: 'Noto Serif KR', Georgia, 'Times New Roman', serif;
+      font-family: 'Noto Sans KR', Georgia, 'Times New Roman', sans-serif;
       font-size: 13px;
       font-weight: 700;
       line-height: 1.7;
@@ -795,14 +732,14 @@
 
     .wedding-date-sub {
       margin: 2px 0 24px;
-      color: #9a9188;
+      color: #8ea0af;
       font-size: 11px;
       line-height: 1.6;
     }
 
     .calendar-wrap {
-      border-top: 1px solid #ddd4cb;
-      border-bottom: 1px solid #ddd4cb;
+      border-top: 1px solid #d4e0ea;
+      border-bottom: 1px solid #d4e0ea;
       padding: 20px 0 22px;
     }
 
@@ -819,7 +756,7 @@
       min-width: 0;
       aspect-ratio: 1;
       color: #35414f;
-      font-family: 'Noto Serif KR', Georgia, 'Times New Roman', serif;
+      font-family: 'Noto Sans KR', Georgia, 'Times New Roman', sans-serif;
       font-size: 11px;
       line-height: 1;
     }
@@ -857,17 +794,119 @@
       z-index: 1;
     }
 
-    .calendar-cell.is-wedding-day::before {
-      content: '';
+    .wedding-day-number {
+      position: relative;
+      z-index: 3;
+    }
+
+    .wedding-heart-bg,
+    .wedding-heart-bubble {
       position: absolute;
-      inset: 50% auto auto 50%;
-      width: 32px;
-      height: 32px;
-      border-radius: 999px;
+      left: 50%;
+      top: 50%;
+      width: 24px;
+      height: 24px;
       background: #73a9bf;
-      transform: translate(-50%, -50%);
+      border-radius: 4px;
+      transform: translate(-50%, -45%) rotate(45deg);
+      pointer-events: none;
+    }
+
+    .wedding-heart-bg {
       z-index: -1;
       box-shadow: 0 8px 16px rgba(76, 128, 149, .22);
+    }
+
+    .wedding-heart-bg::before,
+    .wedding-heart-bg::after,
+    .wedding-heart-bubble::before,
+    .wedding-heart-bubble::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 999px;
+      background: inherit;
+    }
+
+    .wedding-heart-bg::before,
+    .wedding-heart-bubble::before {
+      left: -50%;
+      top: 0;
+    }
+
+    .wedding-heart-bg::after,
+    .wedding-heart-bubble::after {
+      left: 0;
+      top: -50%;
+    }
+
+    .wedding-heart-bubbles {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      overflow: visible;
+      pointer-events: none;
+    }
+
+    .wedding-heart-bubble {
+      --bubble-x: 0px;
+      --bubble-y: -34px;
+      --bubble-scale: .34;
+      width: 25px;
+      height: 25px;
+      background: #9bc3d9;
+      opacity: 0;
+      animation: weddingHeartBubble 2.6s ease-in-out infinite;
+    }
+
+    .wedding-heart-bubble:nth-child(1) {
+      --bubble-x: -12px;
+      --bubble-y: -38px;
+      --bubble-scale: .42;
+      background: #b7d2e2;
+      animation-delay: 0s;
+    }
+
+    .wedding-heart-bubble:nth-child(2) {
+      --bubble-x: 10px;
+      --bubble-y: -46px;
+      --bubble-scale: .36;
+      background: #95c0d8;
+      animation-delay: .48s;
+    }
+
+    .wedding-heart-bubble:nth-child(3) {
+      --bubble-x: 0px;
+      --bubble-y: -54px;
+      --bubble-scale: .3;
+      background: #d7e8f1;
+      animation-delay: .96s;
+    }
+
+    .wedding-heart-bubble:nth-child(4) {
+      --bubble-x: 15px;
+      --bubble-y: -34px;
+      --bubble-scale: .28;
+      background: #c9dbe8;
+      animation-delay: 1.42s;
+    }
+
+    @keyframes weddingHeartBubble {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -38%) rotate(45deg) scale(.12);
+      }
+      18% {
+        opacity: .85;
+      }
+      72% {
+        opacity: .62;
+      }
+      100% {
+        opacity: 0;
+        transform: translate(calc(-50% + var(--bubble-x)), calc(-38% + var(--bubble-y))) rotate(45deg) scale(var(--bubble-scale));
+      }
     }
 
     .countdown {
@@ -881,8 +920,8 @@
       min-width: 0;
       padding: 16px 4px 13px;
       border-radius: 5px;
-      background: #fff;
-      box-shadow: 0 12px 24px rgba(74, 64, 55, .12);
+      background: #f9fcff;
+      box-shadow: 0 12px 24px rgba(52, 78, 101, .1);
     }
 
     .countdown-card strong {
@@ -896,7 +935,7 @@
     .countdown-card span {
       display: block;
       margin-top: 8px;
-      color: #aaa29a;
+      color: #8ea0af;
       font-size: 8px;
       line-height: 1;
       text-transform: uppercase;
@@ -904,8 +943,8 @@
 
     .countdown-message {
       margin: 0;
-      color: #5f5148;
-      font-family: 'Noto Serif KR', Georgia, 'Times New Roman', serif;
+      color: #52697f;
+      font-family: 'Noto Sans KR', Georgia, 'Times New Roman', sans-serif;
       font-size: 12px;
       line-height: 1.8;
       letter-spacing: -.02em;
@@ -919,13 +958,13 @@
 
     .location {
       padding: 72px 0 68px;
-      background: #eef6f8;
-      color: #3f3630;
+      background: #eaf3f9;
+      color: #243447;
     }
 
     .location h3 {
       margin-bottom: 30px;
-      color: #5f6164;
+      color: #62798e;
       font-size: 30px;
       letter-spacing: .04em;
       text-transform: uppercase;
@@ -938,7 +977,7 @@
     .venue-name {
       margin: 0 0 8px;
       color: #23436b;
-      font-family: 'Noto Serif KR', Georgia, 'Times New Roman', serif;
+      font-family: 'Noto Sans KR', Georgia, 'Times New Roman', sans-serif;
       font-size: 14px;
       font-weight: 700;
       line-height: 1.7;
@@ -947,8 +986,8 @@
 
     .venue-address {
       margin: 0;
-      color: #8a949b;
-      font-family: 'Noto Serif KR', Georgia, 'Times New Roman', serif;
+      color: #718799;
+      font-family: 'Noto Sans KR', Georgia, 'Times New Roman', sans-serif;
       font-size: 12px;
       line-height: 1.75;
       word-break: keep-all;
@@ -1020,100 +1059,98 @@
       transform: translate(-50%, -50%) rotate(-45deg);
     }
 
-    .map-open {
-      position: absolute;
-      top: 14px;
-      left: 14px;
-      z-index: 4;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 7px 10px;
-      border-radius: 4px;
-      background: rgba(72, 72, 54, .88);
-      color: #fff;
-      font-family: 'Noto Serif KR', Georgia, 'Times New Roman', serif;
-      font-size: 11px;
-      line-height: 1;
-      box-shadow: 0 4px 12px rgba(43, 55, 57, .16);
-    }
-
-    .map-pin-dot {
-      display: inline-block;
-      width: 8px;
-      height: 8px;
-      border-radius: 999px;
-      background: #f4d34f;
-    }
-
-    .map-label {
-      position: absolute;
-      z-index: 4;
-      left: calc(50% + 16px);
-      top: calc(48% - 30px);
-      padding: 5px 7px;
-      border-radius: 4px;
-      background: rgba(255,255,255,.92);
-      color: #527088;
-      font-family: 'Noto Serif KR', Georgia, 'Times New Roman', serif;
-      font-size: 11px;
-      line-height: 1.2;
-      box-shadow: 0 3px 12px rgba(60, 80, 91, .12);
-    }
-
     .location-details {
       padding: 30px 34px 0;
       text-align: left;
     }
 
-    .transport-title {
-      margin: 0 0 20px;
-      color: #7ba9bb;
-      font-family: 'Noto Serif KR', Georgia, 'Times New Roman', serif;
-      font-size: 14px;
-      line-height: 1.6;
+    .transport-section {
+      padding: 0 0 28px;
+      border-bottom: 1px solid rgba(123, 169, 187, .58);
+      margin-bottom: 30px;
     }
 
-    .transport-title::before {
-      content: '';
-      display: inline-block;
-      width: 14px;
-      height: 10px;
-      margin-right: 8px;
-      border: 1px solid currentColor;
-      border-radius: 2px 2px 3px 3px;
-      box-shadow: inset 0 -3px 0 rgba(123, 169, 187, .2);
-      vertical-align: -1px;
+    .transport-section:last-child {
+      margin-bottom: 0;
+      border-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .transport-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 24px;
+      color: #7ba9bb;
+      font-family: 'Noto Sans KR', Georgia, 'Times New Roman', sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      font-weight: 700;
+    }
+
+    .transport-title img {
+      width: 18px;
+      height: 18px;
+      object-fit: contain;
+      flex: 0 0 auto;
     }
 
     .location-details p {
       margin: 0 0 8px;
       color: #5f676b;
-      font-family: 'Noto Serif KR', Georgia, 'Times New Roman', serif;
+      font-family: 'Noto Sans KR', Georgia, 'Times New Roman', sans-serif;
       font-size: 12px;
       line-height: 1.85;
       word-break: keep-all;
     }
 
+    .transport-route {
+      margin-top: 22px;
+    }
+
+    .transport-route:first-of-type {
+      margin-top: 0;
+    }
+
+    .transport-route strong {
+      display: block;
+      margin-bottom: 4px;
+      color: #405367;
+      font-family: 'Noto Sans KR', Georgia, 'Times New Roman', sans-serif;
+      font-size: 12px;
+      line-height: 1.8;
+    }
+
     .location-actions {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      padding: 26px 34px 0;
+      gap: 8px;
+      padding: 10px 34px 30px;
     }
 
     .location-action {
-      display: block;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
       padding: 13px 10px;
       border-radius: 5px;
-      background: #fff;
+      background: #f9fcff;
       color: #52616a;
       text-align: center;
       text-decoration: none;
-      font-family: 'Noto Serif KR', Georgia, 'Times New Roman', serif;
+      font-family: 'Noto Sans KR', Georgia, 'Times New Roman', sans-serif;
       font-size: 12px;
       line-height: 1.2;
       box-shadow: 0 8px 18px rgba(74, 96, 104, .08);
+    }
+
+    .location-action img {
+      display: block;
+      width: 18px;
+      height: 18px;
+      object-fit: contain;
+      flex: 0 0 auto;
     }
 
     .gallery-grid {
@@ -1149,16 +1186,16 @@
       font-size: 14px;
       letter-spacing: .04em;
       color: white;
-      background: #3d332d;
+      background: #27435f;
     }
 
     .btn.secondary {
-      color: #4f4138;
-      background: #efe3d5;
+      color: #31516e;
+      background: #dceaf4;
     }
 
     .ending {
-      background: linear-gradient(180deg, #fffaf3, #efe1d3);
+      background: linear-gradient(180deg, #f5f9fc, #e2eef7);
       padding-bottom: 92px;
     }
 
@@ -1232,14 +1269,7 @@
 
     <section class="hero-photo">
       <div class="photo-box">
-        <img class="photo-morph pre-image" src="images/sub-1_pre.png" alt="" />
-        <img class="photo-morph final-image" src="images/sub-1.jpg" alt="" />
-        <div class="photo-date">
-          <p>
-            2026년 9월 13일 일요일 12시<br>
-            JK아트컨벤션 4층 아트리움
-          </p>
-        </div>
+        <img src="images/sub-1.jpg" alt="" />
       </div>
     </section>
 
@@ -1271,7 +1301,16 @@
           <div class="calendar-cell">10</div>
           <div class="calendar-cell">11</div>
           <div class="calendar-cell saturday">12</div>
-          <div class="calendar-cell sunday is-wedding-day" aria-label="결혼식 당일">13</div>
+          <div class="calendar-cell sunday is-wedding-day" aria-label="결혼식 당일">
+            <span class="wedding-heart-bg" aria-hidden="true"></span>
+            <span class="wedding-heart-bubbles" aria-hidden="true">
+              <span class="wedding-heart-bubble"></span>
+              <span class="wedding-heart-bubble"></span>
+              <span class="wedding-heart-bubble"></span>
+              <span class="wedding-heart-bubble"></span>
+            </span>
+            <span class="wedding-day-number">13</span>
+          </div>
           <div class="calendar-cell">14</div>
           <div class="calendar-cell">15</div>
           <div class="calendar-cell">16</div>
@@ -1325,18 +1364,67 @@
 
       <div class="map-preview" aria-label="JK아트컨벤션 지도">
         <div id="naverMap" aria-hidden="true"></div>
-        <a class="map-open" href="https://map.naver.com/p/entry/place/1897374821?c=17.17,0,0,0,dh&amp;placePath=/home?from=map&amp;fromPanelNum=1&amp;additionalHeight=76&amp;timestamp=202606091205&amp;locale=ko&amp;svcName=map_pcv5" target="_blank" rel="noopener" aria-label="네이버 지도에서 JK아트컨벤션 열기"><span class="map-pin-dot" aria-hidden="true"></span>지도앱 열기</a>
-        <span class="map-label">JK아트컨벤션</span>
+      </div>
+
+      <div class="location-actions">
+        <a class="location-action" href="https://map.naver.com/p/entry/place/1897374821?c=17.17,0,0,0,dh&amp;placePath=/home?from=map&amp;fromPanelNum=1&amp;additionalHeight=76&amp;timestamp=202606091205&amp;locale=ko&amp;svcName=map_pcv5" target="_blank" rel="noopener">
+          <img src="images/navermap.png" alt="" aria-hidden="true" />
+          <span>네이버 지도</span>
+        </a>
+        <a class="location-action" href="https://map.kakao.com/link/search/%EC%84%9C%EC%9A%B8%20%EC%98%81%EB%93%B1%ED%8F%AC%EA%B5%AC%20%EB%AC%B8%EB%9E%98%EB%A1%9C%20164%20SK%EB%A6%AC%EB%8D%94%EC%8A%A4%EB%B7%B0%204%EC%B8%B5%20JK%EC%95%84%ED%8A%B8%EC%BB%A8%EB%B2%A4%EC%85%98" target="_blank" rel="noopener">
+          <img src="images/kakaomap.png" alt="" aria-hidden="true" />
+          <span>카카오 지도</span>
+        </a>
       </div>
 
       <div class="location-details">
-        <p class="transport-title">자가용</p>
-        <p>내비게이션 : "JK아트컨벤션" 검색</p>
-        <p>서울 영등포구 문래로 164 SK리더스뷰 4층</p>
-      </div>
-      <div class="location-actions">
-        <a class="location-action" href="https://map.naver.com/p/entry/place/1897374821?c=17.17,0,0,0,dh&amp;placePath=/home?from=map&amp;fromPanelNum=1&amp;additionalHeight=76&amp;timestamp=202606091205&amp;locale=ko&amp;svcName=map_pcv5" target="_blank" rel="noopener">네이버 지도</a>
-        <a class="location-action" href="https://map.kakao.com/link/search/%EC%84%9C%EC%9A%B8%20%EC%98%81%EB%93%B1%ED%8F%AC%EA%B5%AC%20%EB%AC%B8%EB%9E%98%EB%A1%9C%20164%20SK%EB%A6%AC%EB%8D%94%EC%8A%A4%EB%B7%B0%204%EC%B8%B5%20JK%EC%95%84%ED%8A%B8%EC%BB%A8%EB%B2%A4%EC%85%98" target="_blank" rel="noopener">카카오 지도</a>
+        <div class="transport-section">
+          <h4 class="transport-title">
+            <img src="images/car.png" alt="" aria-hidden="true" />
+            <span>자차</span>
+          </h4>
+          <p>내비게이션 : 'JK아트컨벤션' 검색</p>
+          <p>서울 영등포구 문래동3가 55-16</p>
+        </div>
+
+        <div class="transport-section">
+          <h4 class="transport-title">
+            <img src="images/bus.png" alt="" aria-hidden="true" />
+            <span>버스</span>
+          </h4>
+          <div class="transport-route">
+            <strong>6625 (문래역1번출구방면)</strong>
+            <p>문래동주민센터 하차 &gt; 문래동 주민센터 방면 &gt; 도보2분</p>
+          </div>
+          <div class="transport-route">
+            <strong>영등포05 (금호아파트 방면)</strong>
+            <p>문래동주민센터 하차 &gt; 정면</p>
+          </div>
+          <div class="transport-route">
+            <strong>6516(타임스퀘어.영등포소방서 방면)</strong>
+            <p>영일시장.록스 하차 &gt; 영등포 SK리더스뷰 아파트 방면 &gt; 도보3분</p>
+          </div>
+        </div>
+
+        <div class="transport-section">
+          <h4 class="transport-title">
+            <img src="images/sub.png" alt="" aria-hidden="true" />
+            <span>지하철</span>
+          </h4>
+          <div class="transport-route">
+            <strong>2호선 (문래역)</strong>
+            <p>문래역 5번출구 &gt; 도보7분</p>
+            <p>문래역 4번출구 &gt; 자체 셔틀버스 항시운행</p>
+          </div>
+        </div>
+
+        <div class="transport-section">
+          <h4 class="transport-title">
+            <img src="images/parking.png" alt="" aria-hidden="true" />
+            <span>주차</span>
+          </h4>
+          <p>본건물 만차시 외부주차장 안내드립니다. 만차시 직원의 안내를 받아 외부주차장을 이용해주세요.</p>
+        </div>
       </div>
     </section>
 
@@ -1368,7 +1456,6 @@
     const storyPlayer = document.querySelector('.story-image');
     const moveTextVideo = document.querySelector('.move-text-video');
     const introMessage = document.querySelector('.intro-message');
-    const photoBox = document.querySelector('.photo-box');
     const customScrollbar = document.querySelector('.custom-scrollbar');
     const customScrollThumb = document.querySelector('.custom-scrollbar-thumb');
     const mapPreview = document.querySelector('.map-preview');
@@ -1392,8 +1479,6 @@
     let introSequenceFinished = false;
     let storyFinishTimer;
     let moveTextFallbackTimer;
-    let photoMorphTimer;
-
     document.addEventListener('contextmenu', (event) => {
       event.preventDefault();
     });
@@ -1738,32 +1823,6 @@
       introMessage.classList.add('is-visible');
     }
 
-    if ('IntersectionObserver' in window && photoBox) {
-      const morphPhoto = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          window.clearTimeout(photoMorphTimer);
-
-          if (!entry.isIntersecting || entry.intersectionRatio < 0.34) {
-            photoBox.classList.add('is-resetting');
-            photoBox.classList.remove('is-morphed');
-            window.setTimeout(() => {
-              photoBox.classList.remove('is-resetting');
-            }, 360);
-            return;
-          }
-
-          photoBox.classList.remove('is-resetting');
-          photoMorphTimer = window.setTimeout(() => {
-            photoBox.classList.add('is-morphed');
-          }, 1300);
-        });
-      }, { threshold: [0, 0.34] });
-
-      morphPhoto.observe(photoBox);
-    } else if (photoBox) {
-      photoBox.classList.add('is-morphed');
-    }
-
     waxHitArea.addEventListener('pointerenter', () => {
       if (!introOpened) {
         letterStage.classList.add('is-seal-hovered');
@@ -1805,3 +1864,4 @@
   </script>
 </body>
 </html>
+
