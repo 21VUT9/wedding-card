@@ -116,6 +116,10 @@
       height: var(--app-height);
     }
 
+    body.contact-modal-open {
+      overflow: hidden;
+    }
+
     .phone-shell {
       width: 100%;
       max-width: 430px;
@@ -1284,6 +1288,189 @@
       font-weight: 700;
     }
 
+    .contact-open {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 60%;
+      margin: 34px auto 0;
+      padding: 8px 11px;
+      border: 0;
+      border-radius: 6px;
+      background: #8bb8d0;
+      color: #fff;
+      font-family: 'Noto Sans KR', Georgia, 'Times New Roman', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 10px 20px rgba(76, 128, 149, .18);
+    }
+
+    .contact-open::after {
+      content: '→';
+      font-size: 18px;
+      font-weight: 300;
+      line-height: 1;
+    }
+
+    .contact-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 220;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+      background: rgba(24, 39, 55, .34);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .25s ease;
+    }
+
+    .contact-overlay.is-open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .contact-dialog {
+      position: relative;
+      width: min(100%, 430px);
+      max-height: min(86vh, 680px);
+      overflow: auto;
+      padding: 48px 32px 38px;
+      border-radius: 5px;
+      background: #f9fcff;
+      color: #243447;
+      box-shadow: 0 24px 60px rgba(24, 39, 55, .22);
+      transform: translateY(12px);
+      transition: transform .25s ease;
+    }
+
+    .contact-overlay.is-open .contact-dialog {
+      transform: translateY(0);
+    }
+
+    .contact-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 30px;
+      height: 30px;
+      border: 0;
+      background: transparent;
+      color: #52697f;
+      font-size: 28px;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .contact-dialog h3 {
+      margin: 0 0 6px;
+      color: #243447;
+      font-size: 22px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .contact-dialog-subtitle {
+      margin: 0 0 34px;
+      color: #8bb8d0;
+      font-family: 'Noto Sans KR', Georgia, 'Times New Roman', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .contact-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      margin-bottom: 30px;
+      border-bottom: 1px solid #d5e1ea;
+    }
+
+    .contact-tab {
+      padding: 0 0 12px;
+      border: 0;
+      border-bottom: 2px solid transparent;
+      background: transparent;
+      color: #9aa9b6;
+      font-family: 'Noto Sans KR', Georgia, 'Times New Roman', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .contact-tab.is-active {
+      border-color: #243447;
+      color: #243447;
+    }
+
+    .contact-panel {
+      display: none;
+      gap: 12px;
+      min-height: 216px;
+    }
+
+    .contact-panel.is-active {
+      display: grid;
+      grid-template-rows: repeat(3, 64px);
+    }
+
+    .contact-card {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) max-content 150px;
+      align-items: center;
+      gap: 12px;
+      height: 64px;
+      padding: 8px 18px;
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: 0 10px 24px rgba(52, 78, 101, .1);
+    }
+
+    .contact-card.is-empty {
+      visibility: hidden;
+      height: 64px;
+    }
+
+    .contact-card-head {
+      display: contents;
+      color: #52697f;
+      font-family: 'Noto Sans KR', Georgia, 'Times New Roman', sans-serif;
+      font-size: 13px;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .contact-card-head strong {
+      grid-column: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .contact-card-role {
+      grid-column: 2;
+      color: #8ea0af;
+    }
+
+    .contact-call {
+      grid-column: 3;
+      justify-self: end;
+      display: block;
+      width: 100%;
+      padding: 11px 12px;
+      border: 0;
+      border-radius: 5px;
+      background: #9db9c9;
+      color: #fff;
+      font-family: 'Noto Sans KR', Georgia, 'Times New Roman', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      text-align: center;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
     .mbti-game {
       margin-top: 12px;
       font-family: 'Noto Sans KR', Georgia, 'Times New Roman', sans-serif;
@@ -1298,10 +1485,18 @@
       line-height: 1.5;
     }
 
+    .mbti-game-title strong {
+      color: #8ea0af;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
     .mbti-options {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 5px;
+      column-gap: 7px;
+      row-gap: 5px;
     }
 
     .mbti-pair {
@@ -1397,6 +1592,16 @@
       .about-us {
         padding-left: 18px;
         padding-right: 18px;
+      }
+
+      .contact-card {
+        grid-template-columns: minmax(0, 1fr) max-content 126px;
+        padding-left: 14px;
+        padding-right: 14px;
+      }
+
+      .mbti-options {
+        column-gap: 6px;
       }
 
       .about-couple {
@@ -1708,7 +1913,7 @@
             <li><strong>TMI</strong> 야구 알려줌 ▶</li>
           </ul>
           <div class="mbti-game" data-mbti-id="groom" data-answer="ENTJ" data-seed="38,62|58,42|57,43|55,45">
-            <p class="mbti-game-title">MBTI<br />맞춰보기</p>
+            <p class="mbti-game-title"><strong>MBTI</strong><br />맞춰보기</p>
             <div class="mbti-options" aria-label="문병구 MBTI 맞춰보기">
               <div class="mbti-pair">
                 <button class="mbti-option" type="button" data-pair="0" data-letter="I"><span class="mbti-letter">I</span><span class="mbti-rate"></span></button>
@@ -1746,7 +1951,7 @@
             <li><strong>TMI</strong> ◀ 보다 야구 좋아함</li>
           </ul>
           <div class="mbti-game" data-mbti-id="bride" data-answer="INTP" data-seed="64,36|45,55|51,49|40,60">
-            <p class="mbti-game-title">MBTI<br />맞춰보기</p>
+            <p class="mbti-game-title"><strong>MBTI</strong><br />맞춰보기</p>
             <div class="mbti-options" aria-label="곽지혜 MBTI 맞춰보기">
               <div class="mbti-pair">
                 <button class="mbti-option" type="button" data-pair="0" data-letter="I"><span class="mbti-letter">I</span><span class="mbti-rate"></span></button>
@@ -1769,7 +1974,63 @@
           </div>
         </article>
       </div>
+      <button class="contact-open" type="button" aria-haspopup="dialog" aria-controls="contactOverlay">축하 연락하기</button>
     </section>
+
+    <div class="contact-overlay" id="contactOverlay" role="dialog" aria-modal="true" aria-labelledby="contactTitle" hidden>
+      <div class="contact-dialog">
+        <button class="contact-close" type="button" aria-label="축하 연락하기 닫기">×</button>
+        <h3 id="contactTitle">축하 연락하기</h3>
+        <p class="contact-dialog-subtitle">직접 축하의 마음을 전해보세요</p>
+
+        <div class="contact-tabs" role="tablist" aria-label="축하 연락 대상">
+          <button class="contact-tab is-active" type="button" role="tab" aria-selected="true" data-contact-tab="groom">신랑에게</button>
+          <button class="contact-tab" type="button" role="tab" aria-selected="false" data-contact-tab="bride">신부에게</button>
+        </div>
+
+        <div class="contact-panel is-active" data-contact-panel="groom">
+          <div class="contact-card">
+            <div class="contact-card-head">
+              <strong>문병구</strong>
+              <span class="contact-card-role">신랑</span>
+            </div>
+            <button class="contact-call" type="button" data-phone="01095692250">전화하기</button>
+          </div>
+          <div class="contact-card">
+            <div class="contact-card-head">
+              <strong>문철주</strong>
+              <span class="contact-card-role">신랑 아버지</span>
+            </div>
+            <button class="contact-call" type="button" data-phone="01023398329">전화하기</button>
+          </div>
+          <div class="contact-card is-empty" aria-hidden="true"></div>
+        </div>
+
+        <div class="contact-panel" data-contact-panel="bride">
+          <div class="contact-card">
+            <div class="contact-card-head">
+              <strong>곽지혜</strong>
+              <span class="contact-card-role">신부</span>
+            </div>
+            <button class="contact-call" type="button" data-phone="01056850345">전화하기</button>
+          </div>
+          <div class="contact-card">
+            <div class="contact-card-head">
+              <strong>곽상원</strong>
+              <span class="contact-card-role">신부 아버지</span>
+            </div>
+            <button class="contact-call" type="button" data-phone="">전화하기</button>
+          </div>
+          <div class="contact-card">
+            <div class="contact-card-head">
+              <strong>이종선</strong>
+              <span class="contact-card-role">신부 어머니</span>
+            </div>
+            <button class="contact-call" type="button" data-phone="">전화하기</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <section class="gallery">
       <h3>Gallery</h3>
@@ -1822,6 +2083,12 @@
     const storyPlayer = document.querySelector('.story-image');
     const moveTextVideo = document.querySelector('.move-text-video');
     const introMessage = document.querySelector('.intro-message');
+    const contactOpen = document.querySelector('.contact-open');
+    const contactOverlay = document.getElementById('contactOverlay');
+    const contactClose = document.querySelector('.contact-close');
+    const contactTabs = document.querySelectorAll('.contact-tab');
+    const contactPanels = document.querySelectorAll('.contact-panel');
+    const contactCalls = document.querySelectorAll('.contact-call');
     const customScrollbar = document.querySelector('.custom-scrollbar');
     const customScrollThumb = document.querySelector('.custom-scrollbar-thumb');
     const mapPreview = document.querySelector('.map-preview');
@@ -2126,6 +2393,38 @@
       });
     };
 
+    const openContactOverlay = () => {
+      if (!contactOverlay) return;
+      contactOverlay.hidden = false;
+      requestAnimationFrame(() => {
+        contactOverlay.classList.add('is-open');
+      });
+      document.body.classList.add('contact-modal-open');
+    };
+
+    const closeContactOverlay = () => {
+      if (!contactOverlay) return;
+      contactOverlay.classList.remove('is-open');
+      document.body.classList.remove('contact-modal-open');
+      window.setTimeout(() => {
+        if (!contactOverlay.classList.contains('is-open')) {
+          contactOverlay.hidden = true;
+        }
+      }, 250);
+    };
+
+    const setContactTab = (target) => {
+      contactTabs.forEach((tab) => {
+        const isActive = tab.dataset.contactTab === target;
+        tab.classList.toggle('is-active', isActive);
+        tab.setAttribute('aria-selected', String(isActive));
+      });
+
+      contactPanels.forEach((panel) => {
+        panel.classList.toggle('is-active', panel.dataset.contactPanel === target);
+      });
+    };
+
     const playWritingSound = () => {
       writingSound.currentTime = 0;
       writingSound.play().catch(() => {});
@@ -2306,8 +2605,38 @@
     loadNaverMap();
     window.setInterval(updateCountdown, 1000);
 
+    contactOpen?.addEventListener('click', openContactOverlay);
+    contactClose?.addEventListener('click', closeContactOverlay);
+    contactOverlay?.addEventListener('click', (event) => {
+      if (event.target === contactOverlay) {
+        closeContactOverlay();
+      }
+    });
+
+    window.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && contactOverlay?.classList.contains('is-open')) {
+        closeContactOverlay();
+      }
+    });
+
+    contactTabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        setContactTab(tab.dataset.contactTab);
+      });
+    });
+
+    contactCalls.forEach((button) => {
+      button.addEventListener('click', () => {
+        const phone = button.dataset.phone?.trim();
+        if (phone) {
+          window.location.href = `tel:${phone}`;
+        }
+      });
+    });
+
     document.addEventListener('pointerdown', (event) => {
       if (event.target.closest('.map-preview')) return;
+      if (event.target.closest('.contact-overlay')) return;
       popHearts(event.clientX, event.clientY);
     });
 
