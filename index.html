@@ -39,6 +39,7 @@
       --gold: #6f9fbd;
       --rose: #c9dbe8;
       --night: #152237;
+      --app-height: 100svh;
     }
 
     * {
@@ -111,12 +112,16 @@
     body.intro-locked {
       overflow: hidden;
       height: 100vh;
+      height: 100svh;
+      height: var(--app-height);
     }
 
     .phone-shell {
       width: 100%;
       max-width: 430px;
       min-height: 100vh;
+      min-height: 100svh;
+      min-height: var(--app-height);
       background: var(--paper);
       overflow: hidden;
       position: relative;
@@ -332,7 +337,11 @@
     .intro {
       position: relative;
       height: 100vh;
+      height: 100svh;
+      height: var(--app-height);
       min-height: 100vh;
+      min-height: 100svh;
+      min-height: var(--app-height);
       padding: 0;
       background: url('images/back.png') center/cover no-repeat;
       overflow: hidden;
@@ -460,6 +469,8 @@
       z-index: 2;
       width: 100%;
       height: 100vh;
+      height: 100svh;
+      height: var(--app-height);
       display: grid;
       place-items: center;
       padding-bottom: 76px;
@@ -483,10 +494,10 @@
       position: relative;
       z-index: 1;
       width: min(94%, 390px);
-      width: min(94%, 390px, calc((100svh - 112px) * .65));
+      width: min(94%, 390px, calc((var(--app-height) - 112px) * .65));
       max-width: 390px;
       aspect-ratio: 13 / 20;
-      max-height: calc(100svh - 112px);
+      max-height: calc(var(--app-height) - 112px);
       overflow: visible;
     }
 
@@ -654,7 +665,7 @@
       object-position: center;
     }
 
-    .message h3, .info h3, .wedding-day h3, .location h3, .gallery h3, .ending h3 {
+    .message h3, .info h3, .wedding-day h3, .location h3, .about-us h3, .gallery h3, .ending h3 {
       font-size: 22px;
       font-weight: 400;
       margin: 0 0 24px;
@@ -1153,6 +1164,254 @@
       flex: 0 0 auto;
     }
 
+    .about-us {
+      padding: 72px 24px 74px;
+      background: #f7fbfe;
+      color: #243447;
+    }
+
+    .about-us h3 {
+      margin-bottom: 16px;
+      color: #8298aa;
+      font-size: 24px;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    .about-kicker {
+      margin: 0;
+      color: #52697f;
+      font-family: 'Noto Sans KR', Georgia, 'Times New Roman', sans-serif;
+      font-size: 12px;
+      line-height: 1.8;
+      letter-spacing: -.02em;
+      word-break: keep-all;
+    }
+
+    .about-subtitle {
+      margin: 4px 0 34px;
+      color: #5b9bb8;
+      font-family: 'Noto Sans KR', Georgia, 'Times New Roman', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.7;
+      letter-spacing: -.02em;
+      word-break: keep-all;
+    }
+
+    .about-couple {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      align-items: start;
+    }
+
+    .about-person {
+      min-width: 0;
+      text-align: center;
+    }
+
+    .about-photo {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      border-radius: 4px;
+      background: #edf5fa;
+      box-shadow: 0 12px 24px rgba(52, 78, 101, .1);
+    }
+
+    .about-photo img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .about-name {
+      margin: 18px 0 10px;
+      color: #405367;
+      font-family: 'Noto Sans KR', Georgia, 'Times New Roman', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.6;
+      letter-spacing: -.02em;
+      word-break: keep-all;
+    }
+
+    .about-role {
+      display: inline-block;
+      margin-right: 5px;
+      color: #8ea0af;
+      font-size: 10px;
+      font-weight: 400;
+      line-height: 1;
+      letter-spacing: .04em;
+      vertical-align: 1px;
+    }
+
+    .about-family {
+      display: block;
+      margin-top: 4px;
+      color: #718799;
+      font-size: 11px;
+      font-weight: 400;
+    }
+
+    .about-flower {
+      width: 13px;
+      height: 13px;
+      margin: 0 1px 0 5px;
+      object-fit: contain;
+      vertical-align: -2px;
+    }
+
+    .about-list {
+      display: grid;
+      gap: 6px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      color: #52697f;
+      font-family: 'Noto Sans KR', Georgia, 'Times New Roman', sans-serif;
+      font-size: 12px;
+      line-height: 1.65;
+      letter-spacing: -.03em;
+      word-break: keep-all;
+    }
+
+    .about-list strong {
+      color: #8ea0af;
+      font-weight: 700;
+    }
+
+    .mbti-game {
+      margin-top: 12px;
+      font-family: 'Noto Sans KR', Georgia, 'Times New Roman', sans-serif;
+      color: #52697f;
+    }
+
+    .mbti-game-title {
+      margin: 0 0 10px;
+      color: #8ea0af;
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1.5;
+    }
+
+    .mbti-options {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 5px;
+    }
+
+    .mbti-pair {
+      display: grid;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .mbti-option {
+      width: 100%;
+      min-width: 0;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: #9fb0be;
+      font: inherit;
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .mbti-letter {
+      display: block;
+      color: inherit;
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .mbti-rate {
+      display: block;
+      min-height: 14px;
+      margin-top: 5px;
+      color: inherit;
+      font-size: 8px;
+      font-weight: 400;
+      line-height: 1.25;
+      opacity: 0;
+    }
+
+    .mbti-rate-label {
+      display: block;
+      color: #a7b5c1;
+      font-size: 7px;
+      letter-spacing: -.03em;
+      white-space: nowrap;
+    }
+
+    .mbti-rate-value {
+      display: block;
+      margin-top: 1px;
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0;
+    }
+
+    .mbti-game.has-voted .mbti-rate {
+      opacity: 1;
+    }
+
+    .mbti-option.is-selected .mbti-letter {
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+
+    .mbti-option.is-leading {
+      color: #5b9bb8;
+    }
+
+    .mbti-option.is-lower {
+      color: #c5d1da;
+    }
+
+    .mbti-option:disabled {
+      cursor: default;
+    }
+
+    .mbti-answer {
+      display: none;
+      margin: 14px 0 0;
+      color: #405367;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.6;
+    }
+
+    .mbti-game.is-complete .mbti-answer {
+      display: block;
+    }
+
+    @media (max-width: 360px) {
+      .about-us {
+        padding-left: 18px;
+        padding-right: 18px;
+      }
+
+      .about-couple {
+        gap: 10px;
+      }
+
+      .about-list {
+        font-size: 11px;
+      }
+
+      .mbti-letter {
+        font-size: 20px;
+      }
+    }
+
     .gallery-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -1428,6 +1687,90 @@
       </div>
     </section>
 
+    <section class="about-us" aria-label="about us">
+      <h3>About Us</h3>
+      <p class="about-kicker">저희 커플을 소개합니다</p>
+      <p class="about-subtitle">하나로 이어진 두개의 우주</p>
+
+      <div class="about-couple">
+        <article class="about-person">
+          <div class="about-photo">
+            <img src="images/aboutm.jpg" alt="신랑 문병구" />
+          </div>
+          <h4 class="about-name">
+            <span class="about-role">신랑</span>문병구
+            <span class="about-family">문철주<img class="about-flower" src="images/wf.png" alt="고" />전은아의 아들</span>
+          </h4>
+          <ul class="about-list">
+            <li><strong>출생</strong> 95년 8월</li>
+            <li><strong>취미</strong> 클라이밍</li>
+            <li><strong>특징</strong> 압도적 기억력</li>
+            <li><strong>TMI</strong> 야구 알려줌 ▶</li>
+          </ul>
+          <div class="mbti-game" data-mbti-id="groom" data-answer="ENTJ" data-seed="38,62|58,42|57,43|55,45">
+            <p class="mbti-game-title">MBTI<br />맞춰보기</p>
+            <div class="mbti-options" aria-label="문병구 MBTI 맞춰보기">
+              <div class="mbti-pair">
+                <button class="mbti-option" type="button" data-pair="0" data-letter="I"><span class="mbti-letter">I</span><span class="mbti-rate"></span></button>
+                <button class="mbti-option" type="button" data-pair="0" data-letter="E"><span class="mbti-letter">E</span><span class="mbti-rate"></span></button>
+              </div>
+              <div class="mbti-pair">
+                <button class="mbti-option" type="button" data-pair="1" data-letter="S"><span class="mbti-letter">S</span><span class="mbti-rate"></span></button>
+                <button class="mbti-option" type="button" data-pair="1" data-letter="N"><span class="mbti-letter">N</span><span class="mbti-rate"></span></button>
+              </div>
+              <div class="mbti-pair">
+                <button class="mbti-option" type="button" data-pair="2" data-letter="T"><span class="mbti-letter">T</span><span class="mbti-rate"></span></button>
+                <button class="mbti-option" type="button" data-pair="2" data-letter="F"><span class="mbti-letter">F</span><span class="mbti-rate"></span></button>
+              </div>
+              <div class="mbti-pair">
+                <button class="mbti-option" type="button" data-pair="3" data-letter="J"><span class="mbti-letter">J</span><span class="mbti-rate"></span></button>
+                <button class="mbti-option" type="button" data-pair="3" data-letter="P"><span class="mbti-letter">P</span><span class="mbti-rate"></span></button>
+              </div>
+            </div>
+            <p class="mbti-answer">정답 : ENTJ</p>
+          </div>
+        </article>
+
+        <article class="about-person">
+          <div class="about-photo">
+            <img src="images/aboutf.jpg" alt="신부 곽지혜" />
+          </div>
+          <h4 class="about-name">
+            <span class="about-role">신부</span>곽지혜
+            <span class="about-family">곽상원 이종선의 딸</span>
+          </h4>
+          <ul class="about-list">
+            <li><strong>출생</strong> 95년 10월</li>
+            <li><strong>취미</strong> 2번 박성한</li>
+            <li><strong>특징</strong> 내향인인데 낯안가림</li>
+            <li><strong>TMI</strong> ◀ 보다 야구 좋아함</li>
+          </ul>
+          <div class="mbti-game" data-mbti-id="bride" data-answer="INTP" data-seed="64,36|45,55|51,49|40,60">
+            <p class="mbti-game-title">MBTI<br />맞춰보기</p>
+            <div class="mbti-options" aria-label="곽지혜 MBTI 맞춰보기">
+              <div class="mbti-pair">
+                <button class="mbti-option" type="button" data-pair="0" data-letter="I"><span class="mbti-letter">I</span><span class="mbti-rate"></span></button>
+                <button class="mbti-option" type="button" data-pair="0" data-letter="E"><span class="mbti-letter">E</span><span class="mbti-rate"></span></button>
+              </div>
+              <div class="mbti-pair">
+                <button class="mbti-option" type="button" data-pair="1" data-letter="S"><span class="mbti-letter">S</span><span class="mbti-rate"></span></button>
+                <button class="mbti-option" type="button" data-pair="1" data-letter="N"><span class="mbti-letter">N</span><span class="mbti-rate"></span></button>
+              </div>
+              <div class="mbti-pair">
+                <button class="mbti-option" type="button" data-pair="2" data-letter="T"><span class="mbti-letter">T</span><span class="mbti-rate"></span></button>
+                <button class="mbti-option" type="button" data-pair="2" data-letter="F"><span class="mbti-letter">F</span><span class="mbti-rate"></span></button>
+              </div>
+              <div class="mbti-pair">
+                <button class="mbti-option" type="button" data-pair="3" data-letter="J"><span class="mbti-letter">J</span><span class="mbti-rate"></span></button>
+                <button class="mbti-option" type="button" data-pair="3" data-letter="P"><span class="mbti-letter">P</span><span class="mbti-rate"></span></button>
+              </div>
+            </div>
+            <p class="mbti-answer">정답 : INTP</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
     <section class="gallery">
       <h3>Gallery</h3>
       <div class="gallery-grid" aria-label="sample wedding gallery">
@@ -1444,7 +1787,30 @@
       <div class="signature">민준 ♥ 서연</div>
     </section>
   </main>
-  <script>
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js';
+    import {
+      doc,
+      getDoc,
+      getFirestore,
+      increment,
+      onSnapshot,
+      setDoc,
+      updateDoc,
+    } from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js';
+
+    const firebaseConfig = {
+      apiKey: 'AIzaSyAGi786U_l-SgdEHRvqb5cfyhhbOAbxMxo',
+      authDomain: 'wedding-card-2b522.firebaseapp.com',
+      projectId: 'wedding-card-2b522',
+      storageBucket: 'wedding-card-2b522.firebasestorage.app',
+      messagingSenderId: '633204223628',
+      appId: '1:633204223628:web:bd6ae6c22b9c6c3df615a9',
+    };
+
+    const firebaseApp = initializeApp(firebaseConfig);
+    const firestoreDb = getFirestore(firebaseApp);
+
     const bgm = document.getElementById('bgm');
     const paperOpenSound = document.getElementById('paperOpenSound');
     const writingSound = document.getElementById('writingSound');
@@ -1479,6 +1845,18 @@
     let introSequenceFinished = false;
     let storyFinishTimer;
     let moveTextFallbackTimer;
+    let customScrollbarResizeTimer;
+    let stableViewportWidth = window.innerWidth;
+
+    const setStableAppHeight = (force = false) => {
+      const widthChanged = Math.abs(window.innerWidth - stableViewportWidth) > 24;
+      if (!force && !widthChanged) return;
+      stableViewportWidth = window.innerWidth;
+      document.documentElement.style.setProperty('--app-height', `${window.innerHeight}px`);
+    };
+
+    setStableAppHeight(true);
+
     document.addEventListener('contextmenu', (event) => {
       event.preventDefault();
     });
@@ -1524,6 +1902,11 @@
 
       customScrollbar.style.setProperty('--scroll-thumb-y', `${progress * maxThumbMove}px`);
       customScrollbar.hidden = scrollHeight <= viewportHeight + 1;
+    };
+
+    const scheduleCustomScrollbarUpdate = () => {
+      window.clearTimeout(customScrollbarResizeTimer);
+      customScrollbarResizeTimer = window.setTimeout(updateCustomScrollbar, 120);
     };
 
     const updateCountdown = () => {
@@ -1605,11 +1988,16 @@
         naver.maps.Event.trigger(map, 'resize');
         map.setCenter(venueLatLng);
       };
+      let mapResizeTimer;
+      const scheduleMapRefresh = () => {
+        window.clearTimeout(mapResizeTimer);
+        mapResizeTimer = window.setTimeout(refreshMapSize, 180);
+      };
 
       refreshMapSize();
       window.setTimeout(refreshMapSize, 250);
       window.setTimeout(refreshMapSize, 900);
-      window.addEventListener('resize', refreshMapSize);
+      window.addEventListener('resize', scheduleMapRefresh);
     };
 
     const loadNaverMap = () => {
@@ -1632,6 +2020,110 @@
         mapPreview?.classList.remove('is-live');
       };
       document.head.appendChild(script);
+    };
+
+    const initMbtiGames = () => {
+      const pairLetters = [
+        ['I', 'E'],
+        ['S', 'N'],
+        ['T', 'F'],
+        ['J', 'P'],
+      ];
+
+      document.querySelectorAll('.mbti-game').forEach((game) => {
+        const gameId = game.dataset.mbtiId || 'default';
+        const answer = game.dataset.answer || '';
+        const storageKey = `wedding-mbti-firestore-${gameId}`;
+        const options = Array.from(game.querySelectorAll('.mbti-option'));
+        const voteDoc = doc(firestoreDb, 'mbtiVotes', gameId);
+        const emptyCounts = { I: 0, E: 0, S: 0, N: 0, T: 0, F: 0, J: 0, P: 0 };
+        let counts = { ...emptyCounts };
+        let votes = [];
+
+        try {
+          votes = JSON.parse(localStorage.getItem(storageKey) || '[]');
+        } catch {
+          votes = [];
+        }
+
+        const saveVotes = () => {
+          localStorage.setItem(storageKey, JSON.stringify(votes));
+        };
+
+        const renderPair = (pairIndex) => {
+          const pairOptions = options.filter((option) => Number(option.dataset.pair) === pairIndex);
+          const selected = votes[pairIndex];
+          const letters = pairLetters[pairIndex];
+          const totals = letters.map((letter) => Number(counts[letter]) || 0);
+          const sum = Math.max(totals[0] + totals[1], 1);
+          const rates = totals.map((value) => Math.round((value / sum) * 100));
+          const leadingIndex = rates[0] >= rates[1] ? 0 : 1;
+
+          pairOptions.forEach((option) => {
+            const letter = option.dataset.letter;
+            const letterIndex = letters.indexOf(letter);
+            const rateNode = option.querySelector('.mbti-rate');
+            option.disabled = Boolean(selected);
+            option.classList.toggle('is-selected', selected === letter);
+            option.classList.toggle('is-leading', Boolean(selected) && letterIndex === leadingIndex);
+            option.classList.toggle('is-lower', Boolean(selected) && letterIndex !== leadingIndex);
+            if (rateNode && letterIndex >= 0) {
+              rateNode.innerHTML = selected
+                ? `<span class="mbti-rate-label">응답률</span><span class="mbti-rate-value">${rates[letterIndex]}%</span>`
+                : '';
+            }
+          });
+        };
+
+        const renderGame = () => {
+          const complete = pairLetters.every((_, index) => votes[index]);
+          game.classList.toggle('has-voted', votes.some(Boolean));
+          game.classList.toggle('is-complete', complete);
+          pairLetters.forEach((_, index) => renderPair(index));
+          const answerNode = game.querySelector('.mbti-answer');
+          if (answerNode) {
+            answerNode.textContent = `정답 : ${answer}`;
+          }
+        };
+
+        options.forEach((option) => {
+          option.addEventListener('click', async () => {
+            const pairIndex = Number(option.dataset.pair);
+            if (votes[pairIndex]) return;
+            const letter = option.dataset.letter;
+            const previousCount = Number(counts[letter]) || 0;
+            votes[pairIndex] = letter;
+            counts[letter] = previousCount + 1;
+            renderGame();
+            option.disabled = true;
+
+            try {
+              const snapshot = await getDoc(voteDoc);
+              if (snapshot.exists()) {
+                await updateDoc(voteDoc, { [letter]: increment(1) });
+              } else {
+                await setDoc(voteDoc, { ...emptyCounts, [letter]: 1 }, { merge: true });
+              }
+              saveVotes();
+            } catch (error) {
+              console.error('MBTI vote failed', error);
+              votes[pairIndex] = undefined;
+              counts[letter] = previousCount;
+              renderGame();
+            }
+          });
+        });
+
+        onSnapshot(voteDoc, (snapshot) => {
+          counts = snapshot.exists() ? { ...emptyCounts, ...snapshot.data() } : { ...emptyCounts };
+          renderGame();
+        }, (error) => {
+          console.error('MBTI vote snapshot failed', error);
+          renderGame();
+        });
+
+        renderGame();
+      });
     };
 
     const playWritingSound = () => {
@@ -1798,9 +2290,19 @@
     });
 
     window.addEventListener('scroll', updateCustomScrollbar, { passive: true });
-    window.addEventListener('resize', updateCustomScrollbar);
+    window.addEventListener('resize', () => {
+      setStableAppHeight();
+      scheduleCustomScrollbarUpdate();
+    });
+    window.addEventListener('orientationchange', () => {
+      window.setTimeout(() => {
+        setStableAppHeight(true);
+        scheduleCustomScrollbarUpdate();
+      }, 320);
+    });
     updateCustomScrollbar();
     updateCountdown();
+    initMbtiGames();
     loadNaverMap();
     window.setInterval(updateCountdown, 1000);
 

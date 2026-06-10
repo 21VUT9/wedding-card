@@ -1,0 +1,12 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /mbtiVotes/{person} {
+      allow read: if true;
+      allow create: if person in ['groom', 'bride'];
+      allow update: if person in ['groom', 'bride'];
+      allow delete: if false;
+    }
+  }
+}
