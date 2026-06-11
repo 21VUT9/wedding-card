@@ -669,7 +669,21 @@
       object-position: center;
     }
 
-    .message h3, .info h3, .wedding-day h3, .location h3, .about-us h3, .gallery h3, .ending h3 {
+    .photo-text-effect {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .photo-text-effect.is-active {
+      opacity: 1;
+    }
+
+    .message h3, .info h3, .wedding-day h3, .location h3, .about-us h3, .timeline h3, .gallery h3, .ending h3 {
       font-size: 22px;
       font-weight: 400;
       margin: 0 0 24px;
@@ -706,7 +720,7 @@
     .date-card .month {
       color: var(--gold);
       letter-spacing: .24em;
-      font-size: 13px;
+      font-size: 12px;
       text-transform: uppercase;
     }
 
@@ -1336,7 +1350,7 @@
       width: min(100%, 430px);
       max-height: min(86vh, 680px);
       overflow: auto;
-      padding: 48px 32px 38px;
+      padding: 48px 24px 38px;
       border-radius: 5px;
       background: #f9fcff;
       color: #243447;
@@ -1417,11 +1431,11 @@
 
     .contact-card {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) max-content 150px;
+      grid-template-columns: minmax(0, 1fr) max-content 108px;
       align-items: center;
-      gap: 12px;
+      gap: 8px;
       height: 64px;
-      padding: 8px 18px;
+      padding: 8px 12px;
       border-radius: 8px;
       background: #fff;
       box-shadow: 0 10px 24px rgba(52, 78, 101, .1);
@@ -1458,7 +1472,7 @@
       justify-self: end;
       display: block;
       width: 100%;
-      padding: 11px 12px;
+      padding: 9px 8px;
       border: 0;
       border-radius: 5px;
       background: #9db9c9;
@@ -1589,15 +1603,27 @@
     }
 
     @media (max-width: 360px) {
+      .contact-dialog {
+        padding-left: 18px;
+        padding-right: 18px;
+      }
+
       .about-us {
         padding-left: 18px;
         padding-right: 18px;
       }
 
       .contact-card {
-        grid-template-columns: minmax(0, 1fr) max-content 126px;
-        padding-left: 14px;
-        padding-right: 14px;
+        grid-template-columns: minmax(0, 1fr) max-content 92px;
+        gap: 6px;
+        padding-left: 10px;
+        padding-right: 10px;
+      }
+
+      .contact-call {
+        font-size: 11px;
+        padding-left: 6px;
+        padding-right: 6px;
       }
 
       .mbti-options {
@@ -1615,6 +1641,236 @@
       .mbti-letter {
         font-size: 20px;
       }
+    }
+
+    .timeline {
+      padding: 72px 0 74px;
+      background: #f7fbfe;
+      color: #243447;
+      overflow: hidden;
+    }
+
+    .timeline h3 {
+      margin-bottom: 14px;
+      color: #8298aa;
+      font-size: 24px;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    .timeline-subtitle {
+      margin: 0 28px 32px;
+      color: #52697f;
+      font-family: 'Noto Sans KR', Georgia, 'Times New Roman', sans-serif;
+      font-size: 13px;
+      line-height: 1.8;
+      word-break: keep-all;
+    }
+
+    .timeline-list {
+      display: grid;
+      gap: 10px;
+      padding: 0 24px;
+    }
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 72px minmax(0, 1fr) max-content;
+      align-items: center;
+      gap: 12px;
+      width: 100%;
+      padding: 10px;
+      border: 0;
+      border-radius: 8px;
+      background: #fff;
+      color: inherit;
+      text-align: left;
+      box-shadow: 0 10px 22px rgba(52, 78, 101, .08);
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+
+    .timeline-thumb {
+      display: grid;
+      place-items: center;
+      width: 72px;
+      aspect-ratio: 1 / 1;
+      border-radius: 6px;
+      background:
+        linear-gradient(rgba(255,255,255,.62), rgba(255,255,255,.62)),
+        repeating-linear-gradient(-24deg, #ecf5fa 0 9px, #f7fbfe 9px 18px);
+      color: #5b9bb8;
+      font-size: 20px;
+      font-weight: 700;
+      overflow: hidden;
+    }
+
+    .timeline-item-copy {
+      min-width: 0;
+      font-family: 'Noto Sans KR', Georgia, 'Times New Roman', sans-serif;
+    }
+
+    .timeline-item-copy strong {
+      display: block;
+      color: #405367;
+      font-size: 13px;
+      line-height: 1.45;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .timeline-item-copy span {
+      display: block;
+      margin-top: 4px;
+      color: #8ea0af;
+      font-size: 11px;
+      line-height: 1.35;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .timeline-item-arrow {
+      color: #9fb0be;
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .comic-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 230;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+      background: rgba(24, 39, 55, .46);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .25s ease;
+    }
+
+    .comic-overlay.is-open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .comic-dialog {
+      position: relative;
+      width: min(100%, 430px);
+      max-height: min(88vh, 760px);
+      overflow: auto;
+      padding: 46px 18px 22px;
+      border-radius: 8px;
+      background: #f9fcff;
+      box-shadow: 0 24px 60px rgba(24, 39, 55, .24);
+      transform: translateY(12px);
+      transition: transform .25s ease;
+    }
+
+    .comic-overlay.is-open .comic-dialog {
+      transform: translateY(0);
+    }
+
+    .comic-close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 32px;
+      height: 32px;
+      border: 0;
+      background: transparent;
+      color: #52697f;
+      font-size: 28px;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .comic-title {
+      margin: 0 36px 16px;
+      color: #405367;
+      font-family: 'Noto Sans KR', Georgia, 'Times New Roman', sans-serif;
+      font-size: 16px;
+      line-height: 1.5;
+      text-align: center;
+      word-break: keep-all;
+    }
+
+    .comic-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .comic-panel {
+      position: relative;
+      min-height: 174px;
+      padding: 14px 10px;
+      border: 1px solid rgba(82, 105, 127, .22);
+      border-radius: 5px;
+      background:
+        linear-gradient(rgba(255,255,255,.72), rgba(255,255,255,.72)),
+        repeating-linear-gradient(-24deg, #ecf5fa 0 10px, #f7fbfe 10px 20px);
+      overflow: hidden;
+    }
+
+    .comic-panel-number {
+      position: absolute;
+      top: 8px;
+      left: 9px;
+      color: #5b9bb8;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .08em;
+    }
+
+    .comic-panel-scene {
+      display: grid;
+      gap: 12px;
+      place-items: center;
+      height: 100%;
+      padding-top: 18px;
+    }
+
+    .comic-faces {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+    }
+
+    .comic-face {
+      display: grid;
+      place-items: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      background: #dcebf3;
+      color: #405367;
+      font-size: 17px;
+      font-weight: 700;
+      box-shadow: inset 0 0 0 3px rgba(255,255,255,.72);
+    }
+
+    .comic-symbol {
+      color: #5b9bb8;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .comic-speech {
+      margin: 0;
+      padding: 8px 9px;
+      border-radius: 7px;
+      background: #fff;
+      color: #52697f;
+      font-family: 'Noto Sans KR', Georgia, 'Times New Roman', sans-serif;
+      font-size: 11px;
+      line-height: 1.55;
+      text-align: center;
+      word-break: keep-all;
+      box-shadow: 0 8px 16px rgba(52, 78, 101, .08);
     }
 
     .gallery-grid {
@@ -1734,6 +1990,7 @@
     <section class="hero-photo">
       <div class="photo-box">
         <img src="images/sub-1.jpg" alt="" />
+        <dotlottie-player class="photo-text-effect" src="effect/Text_02.lottie" background="transparent" speed="2" aria-label="photo text animation"></dotlottie-player>
       </div>
     </section>
 
@@ -2019,16 +2276,67 @@
               <strong>곽상원</strong>
               <span class="contact-card-role">신부 아버지</span>
             </div>
-            <button class="contact-call" type="button" data-phone="">전화하기</button>
+            <button class="contact-call" type="button" data-phone="01037103674">전화하기</button>
           </div>
           <div class="contact-card">
             <div class="contact-card-head">
               <strong>이종선</strong>
               <span class="contact-card-role">신부 어머니</span>
             </div>
-            <button class="contact-call" type="button" data-phone="">전화하기</button>
+            <button class="contact-call" type="button" data-phone="01076757077">전화하기</button>
           </div>
         </div>
+      </div>
+    </div>
+
+    <section class="timeline" aria-label="our timeline">
+      <h3>Our Timeline</h3>
+      <p class="timeline-subtitle">우리의 연애 이야기를 네 개의 장면으로 남겼습니다</p>
+
+      <div class="timeline-list">
+        <button class="timeline-item" type="button" data-comic-episode="0">
+          <span class="timeline-thumb">01</span>
+          <span class="timeline-item-copy">
+            <strong>에피소드 1 : 첫 장면</strong>
+            <span>우연처럼 시작된 대화</span>
+          </span>
+          <span class="timeline-item-arrow">›</span>
+        </button>
+
+        <button class="timeline-item" type="button" data-comic-episode="1">
+          <span class="timeline-thumb">02</span>
+          <span class="timeline-item-copy">
+            <strong>에피소드 2 : 가까워진 날들</strong>
+            <span>말이 잘 통하는 사람의 힘</span>
+          </span>
+          <span class="timeline-item-arrow">›</span>
+        </button>
+
+        <button class="timeline-item" type="button" data-comic-episode="2">
+          <span class="timeline-thumb">03</span>
+          <span class="timeline-item-copy">
+            <strong>에피소드 3 : 우리만의 리듬</strong>
+            <span>취향은 달라도 마음은 같은 쪽</span>
+          </span>
+          <span class="timeline-item-arrow">›</span>
+        </button>
+
+        <button class="timeline-item" type="button" data-comic-episode="3">
+          <span class="timeline-thumb">04</span>
+          <span class="timeline-item-copy">
+            <strong>에피소드 4 : 하나의 방향</strong>
+            <span>이제 다음 컷은 함께</span>
+          </span>
+          <span class="timeline-item-arrow">›</span>
+        </button>
+      </div>
+    </section>
+
+    <div class="comic-overlay" id="comicOverlay" role="dialog" aria-modal="true" aria-labelledby="comicTitle" hidden>
+      <div class="comic-dialog">
+        <button class="comic-close" type="button" aria-label="4컷만화 닫기">×</button>
+        <h3 class="comic-title" id="comicTitle">에피소드 1 : 첫 장면</h3>
+        <div class="comic-grid" id="comicGrid"></div>
       </div>
     </div>
 
@@ -2083,12 +2391,18 @@
     const storyPlayer = document.querySelector('.story-image');
     const moveTextVideo = document.querySelector('.move-text-video');
     const introMessage = document.querySelector('.intro-message');
+    const photoTextEffect = document.querySelector('.photo-text-effect');
     const contactOpen = document.querySelector('.contact-open');
     const contactOverlay = document.getElementById('contactOverlay');
     const contactClose = document.querySelector('.contact-close');
     const contactTabs = document.querySelectorAll('.contact-tab');
     const contactPanels = document.querySelectorAll('.contact-panel');
     const contactCalls = document.querySelectorAll('.contact-call');
+    const timelineItems = document.querySelectorAll('.timeline-item');
+    const comicOverlay = document.getElementById('comicOverlay');
+    const comicClose = document.querySelector('.comic-close');
+    const comicTitle = document.getElementById('comicTitle');
+    const comicGrid = document.getElementById('comicGrid');
     const customScrollbar = document.querySelector('.custom-scrollbar');
     const customScrollThumb = document.querySelector('.custom-scrollbar-thumb');
     const mapPreview = document.querySelector('.map-preview');
@@ -2112,6 +2426,7 @@
     let introSequenceFinished = false;
     let storyFinishTimer;
     let moveTextFallbackTimer;
+    let photoTextPauseTimer;
     let customScrollbarResizeTimer;
     let stableViewportWidth = window.innerWidth;
 
@@ -2425,6 +2740,93 @@
       });
     };
 
+    const timelineEpisodes = [
+      {
+        title: '에피소드 1 : 첫 장면',
+        panels: [
+          { symbol: '?', speech: '처음엔 우연처럼 시작된 대화' },
+          { symbol: '…', speech: '어색함 사이로 자꾸 이어진 말들' },
+          { symbol: '!', speech: '생각보다 잘 맞는다는 발견' },
+          { symbol: '→', speech: '다음 이야기가 궁금해진 순간' },
+        ],
+      },
+      {
+        title: '에피소드 2 : 가까워진 날들',
+        panels: [
+          { symbol: '톡', speech: '짧은 연락은 점점 길어지고' },
+          { symbol: '☕', speech: '평범한 약속도 오래 기억되고' },
+          { symbol: '↔', speech: '서로의 하루가 자연스레 오가고' },
+          { symbol: '♥', speech: '어느새 마음이 가까워졌습니다' },
+        ],
+      },
+      {
+        title: '에피소드 3 : 우리만의 리듬',
+        panels: [
+          { symbol: '⚾', speech: '야구 이야기는 생각보다 진심' },
+          { symbol: '△', speech: '클라이밍처럼 천천히 올라간 마음' },
+          { symbol: '♪', speech: '다른 취향도 둘만의 장면이 되고' },
+          { symbol: '웃', speech: '웃음이 가장 많이 남았습니다' },
+        ],
+      },
+      {
+        title: '에피소드 4 : 하나의 방향',
+        panels: [
+          { symbol: '집', speech: '각자의 오늘을 응원하던 마음' },
+          { symbol: '∞', speech: '이제는 같은 방향을 바라보고' },
+          { symbol: '약', speech: '앞으로의 계절을 함께 약속하며' },
+          { symbol: '끝', speech: '다음 컷은 결혼식에서 이어집니다' },
+        ],
+      },
+    ];
+
+    const renderComicEpisode = (episodeIndex) => {
+      const episode = timelineEpisodes[episodeIndex] || timelineEpisodes[0];
+      if (!comicTitle || !comicGrid) return;
+      comicTitle.textContent = episode.title;
+      comicGrid.innerHTML = episode.panels.map((panel, index) => `
+        <div class="comic-panel">
+          <span class="comic-panel-number">${String(index + 1).padStart(2, '0')}</span>
+          <div class="comic-panel-scene">
+            <div class="comic-faces" aria-hidden="true">
+              <span class="comic-face">문</span>
+              <span class="comic-symbol">${panel.symbol}</span>
+              <span class="comic-face">곽</span>
+            </div>
+            <p class="comic-speech">${panel.speech}</p>
+          </div>
+        </div>
+      `).join('');
+    };
+
+    const openComicOverlay = (episodeIndex) => {
+      if (!comicOverlay) return;
+      renderComicEpisode(episodeIndex);
+      comicOverlay.hidden = false;
+      requestAnimationFrame(() => {
+        comicOverlay.classList.add('is-open');
+      });
+      document.body.classList.add('contact-modal-open');
+    };
+
+    const closeComicOverlay = () => {
+      if (!comicOverlay) return;
+      comicOverlay.classList.remove('is-open');
+      document.body.classList.remove('contact-modal-open');
+      window.setTimeout(() => {
+        if (!comicOverlay.classList.contains('is-open')) {
+          comicOverlay.hidden = true;
+        }
+      }, 250);
+    };
+
+    const initTimeline = () => {
+      timelineItems.forEach((item) => {
+        item.addEventListener('click', () => {
+          openComicOverlay(Number(item.dataset.comicEpisode) || 0);
+        });
+      });
+    };
+
     const playWritingSound = () => {
       writingSound.currentTime = 0;
       writingSound.play().catch(() => {});
@@ -2602,20 +3004,31 @@
     updateCustomScrollbar();
     updateCountdown();
     initMbtiGames();
+    initTimeline();
     loadNaverMap();
     window.setInterval(updateCountdown, 1000);
 
     contactOpen?.addEventListener('click', openContactOverlay);
     contactClose?.addEventListener('click', closeContactOverlay);
+    comicClose?.addEventListener('click', closeComicOverlay);
     contactOverlay?.addEventListener('click', (event) => {
       if (event.target === contactOverlay) {
         closeContactOverlay();
       }
     });
 
+    comicOverlay?.addEventListener('click', (event) => {
+      if (event.target === comicOverlay) {
+        closeComicOverlay();
+      }
+    });
+
     window.addEventListener('keydown', (event) => {
       if (event.key === 'Escape' && contactOverlay?.classList.contains('is-open')) {
         closeContactOverlay();
+      }
+      if (event.key === 'Escape' && comicOverlay?.classList.contains('is-open')) {
+        closeComicOverlay();
       }
     });
 
@@ -2637,6 +3050,7 @@
     document.addEventListener('pointerdown', (event) => {
       if (event.target.closest('.map-preview')) return;
       if (event.target.closest('.contact-overlay')) return;
+      if (event.target.closest('.comic-overlay')) return;
       popHearts(event.clientX, event.clientY);
     });
 
@@ -2652,6 +3066,66 @@
       revealMessage.observe(introMessage);
     } else if (introMessage) {
       introMessage.classList.add('is-visible');
+    }
+
+    const playPhotoTextEffect = () => {
+      if (!photoTextEffect) return;
+      window.clearTimeout(photoTextPauseTimer);
+      photoTextEffect.classList.add('is-active');
+      if (typeof photoTextEffect.seek === 'function') {
+        photoTextEffect.seek(0);
+      }
+      if (typeof photoTextEffect.play === 'function') {
+        photoTextEffect.play();
+      } else {
+        photoTextEffect.setAttribute('autoplay', '');
+      }
+
+      photoTextPauseTimer = window.setTimeout(() => {
+        if (typeof photoTextEffect.pause === 'function') {
+          photoTextEffect.pause();
+        }
+      }, 2500);
+    };
+
+    const resetPhotoTextEffect = () => {
+      if (!photoTextEffect) return;
+      window.clearTimeout(photoTextPauseTimer);
+      if (typeof photoTextEffect.pause === 'function') {
+        photoTextEffect.pause();
+      }
+      if (typeof photoTextEffect.seek === 'function') {
+        photoTextEffect.seek(0);
+      }
+      photoTextEffect.classList.remove('is-active');
+    };
+
+    photoTextEffect?.addEventListener('complete', () => {
+      if (typeof photoTextEffect.pause === 'function') {
+        photoTextEffect.pause();
+      }
+    });
+
+    photoTextEffect?.addEventListener('finish', () => {
+      if (typeof photoTextEffect.pause === 'function') {
+        photoTextEffect.pause();
+      }
+    });
+
+    if ('IntersectionObserver' in window && photoTextEffect) {
+      const photoTextObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && entry.intersectionRatio >= 0.32) {
+            playPhotoTextEffect();
+          } else {
+            resetPhotoTextEffect();
+          }
+        });
+      }, { threshold: [0, 0.32] });
+
+      photoTextObserver.observe(photoTextEffect);
+    } else {
+      playPhotoTextEffect();
     }
 
     waxHitArea.addEventListener('pointerenter', () => {
