@@ -8,5 +8,32 @@ service cloud.firestore {
       allow update: if person in ['groom', 'bride'];
       allow delete: if false;
     }
+
+    match /guessWhoVotes/{question} {
+      allow read: if true;
+      allow create, update: if request.resource.data.keys().hasOnly(['groom', 'bride'])
+        && request.resource.data.groom is int
+        && request.resource.data.bride is int
+        && request.resource.data.groom >= 0
+        && request.resource.data.bride >= 0;
+      allow delete: if false;
+    }
+
+    match /guestMessages/{message} {
+      allow read: if true;
+      allow create: if request.resource.data.keys().hasOnly(['name', 'password', 'body', 'createdAt', 'createdAtMs'])
+        && request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.name.size() <= 18
+        && request.resource.data.password is string
+        && request.resource.data.password.size() <= 20
+        && request.resource.data.body is string
+        && request.resource.data.body.size() > 0
+        && request.resource.data.body.size() <= 200
+        && request.resource.data.createdAt is string
+        && request.resource.data.createdAtMs is int;
+      allow update: if false;
+      allow delete: if true;
+    }
   }
 }
