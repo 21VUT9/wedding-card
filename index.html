@@ -477,7 +477,7 @@
       height: var(--app-height);
       display: grid;
       place-items: center;
-      padding-bottom: 76px;
+      padding-bottom: 0;
       opacity: 0;
       transform: translateY(34px) scale(.92);
       clip-path: inset(48% 5% 48% 5% round 10px);
@@ -497,43 +497,59 @@
     .handwriting {
       position: relative;
       z-index: 1;
-      width: min(94%, 390px);
-      width: min(94%, 390px, calc((var(--app-height) - 112px) * .65));
-      max-width: 390px;
-      aspect-ratio: 13 / 20;
-      max-height: calc(var(--app-height) - 112px);
-      overflow: visible;
-    }
-
-    .story-image {
-      position: absolute;
-      inset: 0;
-      display: block;
       width: 100%;
       height: 100%;
-      object-fit: contain;
-      transform: translateY(-4.2%) scale(1.5);
-      transform-origin: center;
+      overflow: hidden;
     }
 
     .move-text-video {
       position: absolute;
       inset: 0;
-      top: 6.25%;
+      top: 0;
       display: none;
       width: 100%;
       height: 100%;
-      object-fit: contain;
-      transform: translateY(4.8%) scale(1.305);
-      transform-origin: center;
-    }
-
-    .handwriting.is-playing-move .story-image {
-      display: none;
+      object-fit: cover;
+      object-position: center;
+      transform: none;
     }
 
     .handwriting.is-playing-move .move-text-video {
       display: block;
+    }
+
+    .petal-canvas {
+      position: absolute;
+      inset: 0;
+      z-index: 4;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 1.2s ease;
+    }
+
+    .intro.is-petals-active .petal-canvas {
+      opacity: 1;
+    }
+
+    .heart-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 4;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      transform: scale(.96);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 6.3s ease, transform 6.3s cubic-bezier(.16, 1, .3, 1);
+    }
+
+    .intro.is-petals-active .heart-overlay {
+      opacity: 1;
+      transform: scale(1);
     }
 
     .scroll-hint {
@@ -2752,10 +2768,11 @@
       </div>
       <div class="paper-stage" aria-label="opened letter">
         <div class="handwriting" aria-label="Never ending story">
-          <dotlottie-player class="story-image" src="effect/Never%20ending%20story.lottie?v=2" background="transparent" speed="1.26" aria-label="Never ending story"></dotlottie-player>
           <video class="move-text-video" src="effect/move_text.mp4" preload="auto" playsinline muted aria-label="move text animation"></video>
         </div>
       </div>
+      <canvas class="petal-canvas" aria-hidden="true"></canvas>
+      <img class="heart-overlay" src="images/heart1.png" alt="" aria-hidden="true" />
       <div class="scroll-hint">SCROLL</div>
     </section>
 
@@ -3336,8 +3353,8 @@
     const letterStage = document.querySelector('.letter-stage');
     const waxHitArea = document.querySelector('.wax-hit-area');
     const handwriting = document.querySelector('.handwriting');
-    const storyPlayer = document.querySelector('.story-image');
     const moveTextVideo = document.querySelector('.move-text-video');
+    const petalCanvas = document.querySelector('.petal-canvas');
     const introMessage = document.querySelector('.intro-message');
     const photoTextEffect = document.querySelector('.photo-text-effect');
     const contactOpen = document.querySelector('.contact-open');
@@ -3391,15 +3408,27 @@
     const weddingDate = new Date('2026-09-13T12:00:00+09:00');
     const naverMapKeyId = 'dsxfhx8kwi';
     const venuePosition = { lat: 37.5177695, lng: 126.9000792 };
-    const storyActiveDuration = 4100;
+    const writingSoundDuration = 4700;
+    const bgmDelayAfterWriting = 1000;
+    const introScrollUnlockDelay = 5000;
+    const petalLeadMs = 5000;
     const introLockFallback = 45000;
+    const petalSources = ['images/petal-1.png', 'images/petal-2.png', 'images/petal-3.png'];
     const scrollKeys = new Set(['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', 'Home', 'End', ' ']);
     let introLocked = true;
     let introOpened = false;
     let moveTextStarted = false;
     let introSequenceFinished = false;
-    let storyFinishTimer;
+    let bgmSequenceStarted = false;
     let moveTextFallbackTimer;
+    let writingSoundTimer;
+    let bgmStartTimer;
+    let introScrollUnlockTimer;
+    let petalAnimationFrame;
+    let petalsStarted = false;
+    let petals = [];
+    let petalImages = [];
+    let petalLastFrameTime = 0;
     let photoTextPauseTimer;
     let customScrollbarResizeTimer;
     let stableViewportWidth = window.innerWidth;
@@ -4495,30 +4524,183 @@
     const playWritingSound = () => {
       writingSound.currentTime = 0;
       writingSound.play().catch(() => {});
+      window.clearTimeout(writingSoundTimer);
+      writingSoundTimer = window.setTimeout(() => {
+        writingSound.pause();
+        writingSound.currentTime = 0;
+        window.clearTimeout(bgmStartTimer);
+        bgmStartTimer = window.setTimeout(startBgmSequence, bgmDelayAfterWriting);
+      }, writingSoundDuration);
     };
 
-    const playStory = () => {
-      moveTextStarted = false;
-      introSequenceFinished = false;
-      handwriting?.classList.remove('is-playing-move');
+    const startBgmSequence = () => {
+      if (bgmSequenceStarted) return;
+      bgmSequenceStarted = true;
+      if (bgm.paused) {
+        playBgm();
+      }
+    };
+
+    const randomInRange = (min, max) => min + Math.random() * (max - min);
+
+    const loadPetalImages = () => {
+      petalImages = petalSources.map((src) => {
+        const image = new Image();
+        image.src = src;
+        return image;
+      });
+    };
+
+    const resizePetalCanvas = () => {
+      if (!petalCanvas) return;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const width = Math.max(1, Math.round(petalCanvas.clientWidth * dpr));
+      const height = Math.max(1, Math.round(petalCanvas.clientHeight * dpr));
+      if (petalCanvas.width === width && petalCanvas.height === height) return;
+      petalCanvas.width = width;
+      petalCanvas.height = height;
+      const ctx = petalCanvas.getContext('2d');
+      ctx?.setTransform(dpr, 0, 0, dpr, 0, 0);
+    };
+
+    const createPetal = (startAbove = true) => {
+      const width = petalCanvas?.clientWidth || window.innerWidth;
+      const height = petalCanvas?.clientHeight || window.innerHeight;
+      const size = randomInRange(9, 23);
+      const lane = Math.random();
+      let x;
+      let y;
+      if (lane < .16) {
+        x = randomInRange(-width * .08, width * .32);
+        y = randomInRange(-height * .12, height * .22);
+      } else if (lane < .32) {
+        x = randomInRange(width * .7, width * 1.18);
+        y = randomInRange(height * .46, height * .98);
+      } else {
+        x = startAbove ? randomInRange(width * .72, width * 1.22) : randomInRange(width * .18, width * 1.22);
+        y = startAbove ? randomInRange(-height * .08, height * .48) : randomInRange(-size, height * .88);
+      }
+
+      return {
+        image: petalImages[Math.floor(Math.random() * petalImages.length)],
+        x,
+        y,
+        size,
+        speedX: randomInRange(-46, -16),
+        speedY: randomInRange(16, 48),
+        drift: randomInRange(8, 28),
+        sway: randomInRange(0, Math.PI * 2),
+        swaySpeed: randomInRange(.8, 1.8),
+        rotation: randomInRange(0, Math.PI * 2),
+        rotationSpeed: randomInRange(-1.4, 1.4),
+        aspect: randomInRange(.72, 1.12),
+        opacity: randomInRange(.62, .95),
+      };
+    };
+
+    const resetPetals = () => {
+      if (!petalCanvas) return;
+      const count = Math.min(Math.max(Math.round((petalCanvas.clientWidth || 390) / 12), 24), 42);
+      petals = Array.from({ length: count }, () => createPetal(false));
+    };
+
+    const drawPetals = (time) => {
+      if (!petalCanvas || !petalsStarted) return;
+      resizePetalCanvas();
+      const ctx = petalCanvas.getContext('2d');
+      if (!ctx) return;
+
+      const width = petalCanvas.clientWidth;
+      const height = petalCanvas.clientHeight;
+      const delta = petalLastFrameTime ? Math.min((time - petalLastFrameTime) / 1000, .04) : 0;
+      petalLastFrameTime = time;
+      ctx.clearRect(0, 0, width, height);
+
+      petals.forEach((petal, index) => {
+        petal.y += petal.speedY * delta;
+        petal.sway += petal.swaySpeed * delta;
+        petal.rotation += petal.rotationSpeed * delta;
+        petal.x += (petal.speedX + Math.sin(petal.sway) * petal.drift) * delta;
+
+        if (petal.y > height + petal.size * 1.4 || petal.x < -petal.size * 2) {
+          petals[index] = createPetal(true);
+          return;
+        }
+
+        if (!petal.image?.complete) return;
+        const w = petal.size;
+        const h = petal.size * petal.aspect;
+        ctx.save();
+        ctx.globalAlpha = petal.opacity;
+        ctx.translate(petal.x, petal.y);
+        ctx.rotate(petal.rotation);
+        ctx.drawImage(petal.image, -w / 2, -h / 2, w, h);
+        ctx.restore();
+      });
+
+      petalAnimationFrame = window.requestAnimationFrame(drawPetals);
+    };
+
+    const startPetals = () => {
+      if (petalsStarted || !petalCanvas) return;
+      petalsStarted = true;
+      intro?.classList.add('is-petals-active');
+      resizePetalCanvas();
+      resetPetals();
+      petalLastFrameTime = 0;
+      window.cancelAnimationFrame(petalAnimationFrame);
+      petalAnimationFrame = window.requestAnimationFrame(drawPetals);
+    };
+
+    const syncPetalsBeforeVideoEnd = () => {
+      if (
+        !moveTextStarted ||
+        petalsStarted ||
+        !moveTextVideo ||
+        !Number.isFinite(moveTextVideo.duration) ||
+        moveTextVideo.duration <= 0
+      ) {
+        return;
+      }
+
+      const remainingMs = (moveTextVideo.duration - moveTextVideo.currentTime) * 1000;
+      if (remainingMs <= petalLeadMs) {
+        startPetals();
+      }
+    };
+
+    const playIntroVideo = () => {
+      if (moveTextStarted) return;
+      moveTextStarted = true;
+      handwriting?.classList.add('is-playing-move');
 
       if (moveTextVideo) {
         moveTextVideo.pause();
         moveTextVideo.currentTime = 0;
       }
 
-      if (typeof storyPlayer.seek === 'function') {
-        storyPlayer.seek(0);
+      if (!moveTextVideo) {
+        finishIntroSequence();
+        return;
       }
 
-      if (typeof storyPlayer.play === 'function') {
-        storyPlayer.play();
-      } else {
-        storyPlayer.setAttribute('autoplay', '');
-      }
-
-      window.clearTimeout(storyFinishTimer);
-      storyFinishTimer = window.setTimeout(finishIntroStory, storyActiveDuration);
+      moveTextVideo.muted = true;
+      moveTextVideo.defaultMuted = true;
+      moveTextVideo.volume = 0;
+      moveTextVideo.play()
+        .then(() => {
+          playWritingSound();
+          window.clearTimeout(moveTextFallbackTimer);
+          const fallbackDuration = Number.isFinite(moveTextVideo.duration) && moveTextVideo.duration > 0
+            ? moveTextVideo.duration * 1000 + 1000
+            : 30000;
+          moveTextFallbackTimer = window.setTimeout(finishIntroSequence, fallbackDuration);
+          window.clearTimeout(introScrollUnlockTimer);
+          introScrollUnlockTimer = window.setTimeout(unlockIntroScroll, introScrollUnlockDelay);
+        })
+        .catch(() => {
+          finishIntroSequence();
+        });
     };
 
     const openIntroLetter = () => {
@@ -4529,58 +4711,26 @@
       letterStage.classList.remove('is-seal-hovered');
       intro.classList.add('is-opened');
       waxHitArea.disabled = true;
-      window.setTimeout(playWritingSound, 500);
-      window.setTimeout(playStory, 1000);
+      playIntroVideo();
       window.setTimeout(finishIntroSequence, introLockFallback);
     };
 
     const finishIntroSequence = () => {
       if (introSequenceFinished) return;
       introSequenceFinished = true;
-      window.clearTimeout(storyFinishTimer);
       window.clearTimeout(moveTextFallbackTimer);
-      writingSound.pause();
-      writingSound.currentTime = 0;
+      window.clearTimeout(introScrollUnlockTimer);
       unlockIntroScroll();
-      if (bgm.paused) {
-        playBgm();
-      }
     };
 
-    const finishIntroStory = () => {
-      if (moveTextStarted) return;
-      moveTextStarted = true;
-      window.clearTimeout(storyFinishTimer);
-      writingSound.pause();
-      writingSound.currentTime = 0;
-      playBgm();
-
-      if (!moveTextVideo) {
-        finishIntroSequence();
-        return;
-      }
-
-      handwriting?.classList.add('is-playing-move');
-      moveTextVideo.muted = true;
-      moveTextVideo.defaultMuted = true;
-      moveTextVideo.volume = 0;
-      moveTextVideo.currentTime = 0;
-      moveTextVideo.play()
-        .then(() => {
-          window.clearTimeout(moveTextFallbackTimer);
-          const fallbackDuration = Number.isFinite(moveTextVideo.duration) && moveTextVideo.duration > 0
-            ? moveTextVideo.duration * 1000 + 1000
-            : 30000;
-          moveTextFallbackTimer = window.setTimeout(finishIntroSequence, fallbackDuration);
-        })
-        .catch(() => {
-          finishIntroSequence();
-        });
-    };
-
-    storyPlayer.addEventListener('complete', finishIntroStory);
-    storyPlayer.addEventListener('finish', finishIntroStory);
+    loadPetalImages();
+    window.addEventListener('resize', () => {
+      if (!petalsStarted) return;
+      resizePetalCanvas();
+      resetPetals();
+    });
     moveTextVideo?.addEventListener('ended', finishIntroSequence);
+    moveTextVideo?.addEventListener('timeupdate', syncPetalsBeforeVideoEnd);
     moveTextVideo?.addEventListener('error', finishIntroSequence);
     waxHitArea.addEventListener('click', openIntroLetter);
 
@@ -4610,7 +4760,6 @@
         });
     };
 
-    const randomInRange = (min, max) => min + Math.random() * (max - min);
     const heartColors = [
       { color: '#ff4f6d', shadow: 'rgba(255, 79, 109, .28)' },
       { color: '#ff6fae', shadow: 'rgba(255, 111, 174, .28)' },
