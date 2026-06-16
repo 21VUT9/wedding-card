@@ -1771,6 +1771,13 @@
       overflow: hidden;
     }
 
+    .timeline-thumb img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
     .timeline-item-copy {
       min-width: 0;
       font-family: 'Noto Sans KR', Georgia, 'Times New Roman', sans-serif;
@@ -1826,16 +1833,56 @@
       width: min(100%, 430px);
       max-height: min(88vh, 760px);
       overflow: auto;
-      padding: 46px 18px 22px;
+      padding: 46px 0 0;
       border-radius: 8px;
-      background: #f9fcff;
+      background: #20252a;
       box-shadow: 0 24px 60px rgba(24, 39, 55, .24);
       transform: translateY(12px);
       transition: transform .25s ease;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .comic-dialog::-webkit-scrollbar {
+      width: 0;
+      height: 0;
     }
 
     .comic-overlay.is-open .comic-dialog {
       transform: translateY(0);
+    }
+
+    .comic-scroll-indicator {
+      --comic-scroll-top: 0px;
+      --comic-scroll-right: 0px;
+      --comic-scroll-height: 0px;
+      --comic-thumb-height: 42px;
+      --comic-thumb-y: 0px;
+      position: fixed;
+      top: var(--comic-scroll-top);
+      right: var(--comic-scroll-right);
+      z-index: 231;
+      width: 4px;
+      height: var(--comic-scroll-height);
+      border-radius: 999px;
+      background: rgba(255,255,255,.18);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .25s ease;
+    }
+
+    .comic-scroll-indicator.is-visible {
+      opacity: 1;
+    }
+
+    .comic-scroll-thumb {
+      display: block;
+      width: 100%;
+      height: var(--comic-thumb-height);
+      border-radius: inherit;
+      background: rgba(255,255,255,.72);
+      transform: translateY(var(--comic-thumb-y));
+      will-change: transform;
     }
 
     .comic-close {
@@ -1845,16 +1892,18 @@
       width: 32px;
       height: 32px;
       border: 0;
-      background: transparent;
-      color: #52697f;
+      border-radius: 999px;
+      background: rgba(255,255,255,.92);
+      color: #405367;
       font-size: 28px;
       line-height: 1;
       cursor: pointer;
+      z-index: 2;
     }
 
     .comic-title {
-      margin: 0 36px 16px;
-      color: #405367;
+      margin: 0 46px 18px;
+      color: #fff;
       font-family: 'Noto Sans KR', Georgia, 'Times New Roman', sans-serif;
       font-size: 16px;
       line-height: 1.5;
@@ -1864,78 +1913,137 @@
 
     .comic-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
+      gap: 0;
+      background: #101418;
+    }
+
+    .comic-image-strip {
+      display: grid;
+      gap: 0;
+      background: #101418;
+    }
+
+    .comic-image-strip img {
+      display: block;
+      width: 100%;
+      height: auto;
+      margin: 0;
+      border: 0;
     }
 
     .comic-panel {
       position: relative;
-      min-height: 174px;
-      padding: 14px 10px;
-      border: 1px solid rgba(82, 105, 127, .22);
-      border-radius: 5px;
+      min-height: 430px;
+      padding: 34px 22px;
+      border: 0;
+      border-radius: 0;
       background:
-        linear-gradient(rgba(255,255,255,.72), rgba(255,255,255,.72)),
-        repeating-linear-gradient(-24deg, #ecf5fa 0 10px, #f7fbfe 10px 20px);
+        radial-gradient(circle at 18% 22%, rgba(139,184,208,.26), transparent 24%),
+        radial-gradient(circle at 82% 72%, rgba(247,251,254,.9), transparent 22%),
+        linear-gradient(140deg, #eef7fb 0%, #fff 48%, #dcebf3 100%);
       overflow: hidden;
+    }
+
+    .comic-panel + .comic-panel {
+      border-top: 10px solid #101418;
+    }
+
+    .comic-panel:nth-child(even) {
+      background:
+        radial-gradient(circle at 78% 18%, rgba(139,184,208,.3), transparent 24%),
+        radial-gradient(circle at 18% 78%, rgba(255,255,255,.9), transparent 20%),
+        linear-gradient(145deg, #f9fcff 0%, #e8f3f8 52%, #fff 100%);
     }
 
     .comic-panel-number {
       position: absolute;
-      top: 8px;
-      left: 9px;
+      top: 18px;
+      left: 18px;
       color: #5b9bb8;
-      font-size: 10px;
+      font-size: 11px;
       font-weight: 700;
       letter-spacing: .08em;
     }
 
     .comic-panel-scene {
       display: grid;
-      gap: 12px;
+      gap: 28px;
       place-items: center;
       height: 100%;
-      padding-top: 18px;
+      min-height: 360px;
+      padding-top: 24px;
     }
 
     .comic-faces {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 9px;
+      gap: 16px;
     }
 
     .comic-face {
       display: grid;
       place-items: center;
-      width: 40px;
-      height: 40px;
+      width: 76px;
+      height: 76px;
       border-radius: 999px;
       background: #dcebf3;
       color: #405367;
-      font-size: 17px;
+      font-size: 25px;
       font-weight: 700;
       box-shadow: inset 0 0 0 3px rgba(255,255,255,.72);
     }
 
     .comic-symbol {
       color: #5b9bb8;
-      font-size: 16px;
+      font-size: 30px;
       font-weight: 700;
     }
 
     .comic-speech {
       margin: 0;
-      padding: 8px 9px;
-      border-radius: 7px;
+      max-width: 280px;
+      padding: 14px 16px;
+      border: 2px solid #405367;
+      border-radius: 4px;
       background: #fff;
-      color: #52697f;
+      color: #243447;
       font-family: 'Noto Sans KR', Georgia, 'Times New Roman', sans-serif;
-      font-size: 11px;
-      line-height: 1.55;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.7;
       text-align: center;
       word-break: keep-all;
-      box-shadow: 0 8px 16px rgba(52, 78, 101, .08);
+      box-shadow: 6px 6px 0 rgba(64, 83, 103, .14);
+    }
+
+    .comic-nav {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      margin: 0;
+      padding: 16px 18px 20px;
+      background: #101418;
+    }
+
+    .comic-nav-button {
+      min-width: 112px;
+      padding: 10px 14px;
+      border: 1px solid rgba(255,255,255,.22);
+      border-radius: 4px;
+      background: rgba(255,255,255,.92);
+      color: #243447;
+      font-family: 'Noto Sans KR', Georgia, 'Times New Roman', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.2;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .comic-nav-button:active {
+      transform: translateY(1px);
     }
 
     .gallery {
@@ -2929,7 +3037,7 @@
           저희 두 사람이 하나 되는 소중한 날,<br>
           귀한 걸음으로 축복해 주신다면<br>
           큰 기쁨이겠습니다.
-          <span class="jp-text">私たち二人が一つになる大切な日、<br>お越しいただき祝福していただけましたら<br>大きな喜びです。</span>
+          <span class="jp-text">未熟な私たち二人が夫婦となる大切な日、<br>お忙しい中お越しいただき、<br>温かく見守っていただけましたら幸いです。</span>
         </p>
         <div class="couple-names">
           신랑 문병구 · 신부 곽지혜
@@ -3086,8 +3194,8 @@
             </span>
           </h4>
           <div class="transport-route">
-            <strong>2호선 (문래역)<span class="jp-text tight">2号線（文来駅）</span></strong>
-            <p>문래역 5번출구 &gt; 도보7분<span class="jp-text tight">文来駅5番出口 &gt; 徒歩7分</span></p>
+            <strong>2호선 (문래역)<span class="jp-text tight">2号線（文来駅/ムンレ駅）</span></strong>
+            <p>문래역 5번출구 &gt; 도보7분<span class="jp-text tight">文来駅5番出口から徒歩7分</span></p>
             <p>문래역 4번출구 &gt; 자체 셔틀버스 항시운행<span class="jp-text tight">文来駅4番出口 &gt; 専用シャトルバス随時運行</span></p>
           </div>
         </div>
@@ -3119,11 +3227,11 @@
           <ul class="about-list">
             <li><strong>출생</strong> 95년 8월</li>
             <li><strong>취미</strong> 클라이밍<span class="jp-text tight">趣味：クライミング</span></li>
-            <li><strong>특징</strong> 압도적 기억력<span class="jp-text tight">特徴：圧倒的な記憶力</span></li>
-            <li><strong>TMI</strong> 야구 알려줌 ▶<span class="jp-text tight">TMI：野球を教えてくれる ▶</span></li>
+            <li><strong>특징</strong> 압도적 기억력<span class="jp-text tight">特徴：抜群の記憶力</span></li>
+            <li><strong>TMI</strong> 야구 알려줌 ▶<span class="jp-text tight">TMI：野球を教えてくれた ▶</span></li>
           </ul>
           <div class="mbti-game" data-mbti-id="groom" data-answer="ENTJ" data-seed="38,62|58,42|57,43|55,45">
-            <p class="mbti-game-title"><strong>MBTI</strong><br />맞춰보기<span class="jp-text tight">当ててみてください</span></p>
+            <p class="mbti-game-title"><strong>MBTI</strong><br />맞춰보기<span class="jp-text tight">MBTIを当ててみてね！</span></p>
             <div class="mbti-options" aria-label="문병구 MBTI 맞춰보기">
               <div class="mbti-pair">
                 <button class="mbti-option" type="button" data-pair="0" data-letter="I"><span class="mbti-letter">I</span><span class="mbti-rate"></span></button>
@@ -3156,12 +3264,12 @@
           </h4>
           <ul class="about-list">
             <li><strong>출생</strong> 95년 10월</li>
-            <li><strong>취미</strong> 2번 박성한<span class="jp-text tight">趣味：背番号2 パク・ソンハン</span></li>
-            <li><strong>특징</strong> 내향인인데 낯안가림<span class="jp-text tight">特徴：内向的だけど人見知りしない</span></li>
-            <li><strong>TMI</strong> ◀ 보다 야구 좋아함<span class="jp-text tight">TMI：◀ より野球が好き</span></li>
+            <li><strong>취미</strong> 2번 박성한<span class="jp-text tight">趣味：背番号2番のパク・ソンハン</span></li>
+            <li><strong>특징</strong> 내향인인데 낯안가림<span class="jp-text tight">特徴：内向型だけど人見知りしない</span></li>
+            <li><strong>TMI</strong> ◀ 보다 야구 좋아함<span class="jp-text tight">TMI：◀ 彼より野球にハマってる</span></li>
           </ul>
           <div class="mbti-game" data-mbti-id="bride" data-answer="INTP" data-seed="64,36|45,55|51,49|40,60">
-            <p class="mbti-game-title"><strong>MBTI</strong><br />맞춰보기<span class="jp-text tight">当ててみてください</span></p>
+            <p class="mbti-game-title"><strong>MBTI</strong><br />맞춰보기<span class="jp-text tight">MBTIを当ててみてね！</span></p>
             <div class="mbti-options" aria-label="곽지혜 MBTI 맞춰보기">
               <div class="mbti-pair">
                 <button class="mbti-option" type="button" data-pair="0" data-letter="I"><span class="mbti-letter">I</span><span class="mbti-rate"></span></button>
@@ -3244,14 +3352,14 @@
 
     <section class="timeline" aria-label="our timeline">
       <h3>OUR STORY</h3>
-      <p class="timeline-subtitle">우리의 연애 이야기를 네 개의 장면으로 남겼습니다</p>
+      <p class="timeline-subtitle">우리의 연애 이야기</p>
 
       <div class="timeline-list">
         <button class="timeline-item" type="button" data-comic-episode="0">
-          <span class="timeline-thumb">01</span>
+          <span class="timeline-thumb"><img src="images/thumb.jpg" alt="" loading="lazy"></span>
           <span class="timeline-item-copy">
-            <strong>에피소드 1 : 첫 장면</strong>
-            <span>우연처럼 시작된 대화</span>
+            <strong>EP1 : 그날,</strong>
+            <span>2024년 1월 1일</span>
           </span>
           <span class="timeline-item-arrow">›</span>
         </button>
@@ -3259,7 +3367,7 @@
         <button class="timeline-item" type="button" data-comic-episode="1">
           <span class="timeline-thumb">02</span>
           <span class="timeline-item-copy">
-            <strong>에피소드 2 : 가까워진 날들</strong>
+            <strong>EP2 : 가까워진 날들</strong>
             <span>말이 잘 통하는 사람의 힘</span>
           </span>
           <span class="timeline-item-arrow">›</span>
@@ -3268,7 +3376,7 @@
         <button class="timeline-item" type="button" data-comic-episode="2">
           <span class="timeline-thumb">03</span>
           <span class="timeline-item-copy">
-            <strong>에피소드 3 : 우리만의 리듬</strong>
+            <strong>EP3 : 우리만의 리듬</strong>
             <span>취향은 달라도 마음은 같은 쪽</span>
           </span>
           <span class="timeline-item-arrow">›</span>
@@ -3277,7 +3385,7 @@
         <button class="timeline-item" type="button" data-comic-episode="3">
           <span class="timeline-thumb">04</span>
           <span class="timeline-item-copy">
-            <strong>에피소드 4 : 하나의 방향</strong>
+            <strong>EP4 : 하나의 방향</strong>
             <span>이제 다음 컷은 함께</span>
           </span>
           <span class="timeline-item-arrow">›</span>
@@ -3287,9 +3395,12 @@
 
     <div class="comic-overlay" id="comicOverlay" role="dialog" aria-modal="true" aria-labelledby="comicTitle" hidden>
       <div class="comic-dialog">
-        <button class="comic-close" type="button" aria-label="4컷만화 닫기">×</button>
-        <h3 class="comic-title" id="comicTitle">에피소드 1 : 첫 장면</h3>
+        <button class="comic-close" type="button" aria-label="웹툰 닫기">×</button>
+        <h3 class="comic-title" id="comicTitle">EP1 : 그날,</h3>
         <div class="comic-grid" id="comicGrid"></div>
+      </div>
+      <div class="comic-scroll-indicator" id="comicScrollIndicator" aria-hidden="true">
+        <span class="comic-scroll-thumb" id="comicScrollThumb"></span>
       </div>
     </div>
 
@@ -3456,8 +3567,8 @@
         <span class="ending-line">저희를 응원해 주시고 아껴주신 모든 분들께<span class="jp-text tight">私たちを応援し、大切に見守ってくださった皆さまに</span></span>
         <span class="ending-line">진심으로 감사드립니다.<span class="jp-text tight">心より感謝申し上げます。</span></span>
         <span class="ending-line ending-gap">함께 나눈 추억과 따뜻한 마음들을 소중히 간직하며,<span class="jp-text tight">共に分かち合った思い出と温かな気持ちを大切にしながら、</span></span>
-        <span class="ending-line">앞으로도 서로의 가장 좋은 친구이자 든든한 가족이 되어<span class="jp-text tight">これからも互いの一番の友人であり、頼もしい家族となり、</span></span>
-        <span class="ending-line">한 페이지씩 이야기를 써 내려가겠습니다.<span class="jp-text tight">一ページずつ物語を綴っていきます。</span></span>
+        <span class="ending-line">앞으로도 서로의 가장 좋은 친구이자 든든한 가족이 되어<span class="jp-text tight">これからも互いの一番の親友であり、かけがえのない家族として、</span></span>
+        <span class="ending-line">한 페이지씩 이야기를 써 내려가겠습니다.<span class="jp-text tight">一ページずつ二人の物語を紡いでまいります。</span></span>
         <span class="ending-line ending-gap">저희의 새로운 첫 장을 함께해 주셔서 감사합니다.<span class="jp-text tight">私たちの新しい第一章を共にしてくださり、ありがとうございます。</span></span>
         <span class="ending-line ending-gap">그리고 앞으로도 오래도록,<span class="jp-text tight">そしてこれからも末永く、</span></span>
         <span class="ending-line">저희의 Never Ending Story를 지켜봐 주세요.<span class="jp-text tight">私たちの Never Ending Story を見守ってください。</span></span>
@@ -3465,8 +3576,7 @@
       <div class="signature">신랑 문병구 · 신부 곽지혜</div>
       <p class="copyright-note">
         Copyright © 2026. All rights reserved.<br />
-        이 청첩장은 저희 부부가 직접 제작, 디자인 하였습니다.<br />
-        この招待状は私たち夫婦が直接制作・デザインしました。
+        이 청첩장은 저희 부부가 직접 제작, 디자인 하였습니다.
       </p>
     </section>
   </main>
@@ -3549,6 +3659,9 @@
     const comicClose = document.querySelector('.comic-close');
     const comicTitle = document.getElementById('comicTitle');
     const comicGrid = document.getElementById('comicGrid');
+    const comicDialog = document.querySelector('.comic-dialog');
+    const comicScrollIndicator = document.getElementById('comicScrollIndicator');
+    const comicScrollThumb = document.getElementById('comicScrollThumb');
     const customScrollbar = document.querySelector('.custom-scrollbar');
     const customScrollThumb = document.querySelector('.custom-scrollbar-thumb');
     const mapPreview = document.querySelector('.map-preview');
@@ -4107,14 +4220,14 @@
       {
         id: 'cute',
         question: 'Q4. 애교가 더 많을 것 같은 사람은?',
-        questionJp: 'Q4. 愛嬌がもっと多そうな人は？',
+        questionJp: 'Q4. 甘えん坊なのはどっち？',
         bride: '신랑이요! 밖에서는 아닌 척해요.',
         groom: '저는 애교라기보다 생존형 리액션입니다.',
       },
       {
         id: 'chores',
         question: 'Q5. 집안일을 더 꼼꼼하게 할 것 같은 사람은?',
-        questionJp: 'Q5. 家事をより丁寧にしそうな人は？',
+        questionJp: 'Q5. 家事をきっちりこなせそうなのはどっち？',
         bride: '저요! 디테일은 제가 더 잘 봅니다.',
         groom: '인정합니다. 저는 큰일부터 맡겠습니다.',
       },
@@ -4128,14 +4241,14 @@
       {
         id: 'secret-money',
         question: 'Q7. 비상금을 몰래 숨겨둘 것 같은 사람은?',
-        questionJp: 'Q7. へそくりをこっそり隠しておきそうな人は？',
+        questionJp: 'Q7. こっそり「へそくり」を作ってそうなのはどっち？',
         bride: '신랑이요! 숨겨도 표정에 다 나올 것 같아요.',
         groom: '비상금보다 비상 간식을 숨길 것 같습니다.',
       },
       {
         id: 'zombie',
         question: 'Q8. 좀비가 나타나면 가장 먼저 도망칠 사람은?',
-        questionJp: 'Q8. ゾンビが現れたら最初に逃げそうな人は？',
+        questionJp: 'Q8. ゾンビが現れたとき、真っ先に逃げ出しそうなのはどっち？',
         bride: '저요! 일단 살아야 같이 작전도 짭니다.',
         groom: '저도 뛰겠습니다. 방향은 제가 보겠습니다.',
       },
@@ -4149,7 +4262,7 @@
       {
         id: 'nagging',
         question: 'Q10. 결혼 후 더 잔소리를 많이 할 것 같은 사람은?',
-        questionJp: 'Q10. 結婚後、より小言が多くなりそうな人は？',
+        questionJp: 'Q10. 結婚してから、小言が増えそうなのはどっち？',
         bride: '저요! 사랑이 담긴 잔소리입니다.',
         groom: '듣는 연습을 열심히 하겠습니다.',
       },
@@ -4568,16 +4681,15 @@
 
     const timelineEpisodes = [
       {
-        title: '에피소드 1 : 첫 장면',
-        panels: [
-          { symbol: '?', speech: '처음엔 우연처럼 시작된 대화' },
-          { symbol: '…', speech: '어색함 사이로 자꾸 이어진 말들' },
-          { symbol: '!', speech: '생각보다 잘 맞는다는 발견' },
-          { symbol: '→', speech: '다음 이야기가 궁금해진 순간' },
+        title: 'EP1 : 그날,',
+        images: [
+          'images/EP1-1.jpg',
+          'images/EP1-2.jpg',
+          'images/EP1-3.jpg',
         ],
       },
       {
-        title: '에피소드 2 : 가까워진 날들',
+        title: 'EP2 : 가까워진 날들',
         panels: [
           { symbol: '톡', speech: '짧은 연락은 점점 길어지고' },
           { symbol: '☕', speech: '평범한 약속도 오래 기억되고' },
@@ -4586,7 +4698,7 @@
         ],
       },
       {
-        title: '에피소드 3 : 우리만의 리듬',
+        title: 'EP3 : 우리만의 리듬',
         panels: [
           { symbol: '⚾', speech: '야구 이야기는 생각보다 진심' },
           { symbol: '△', speech: '클라이밍처럼 천천히 올라간 마음' },
@@ -4595,7 +4707,7 @@
         ],
       },
       {
-        title: '에피소드 4 : 하나의 방향',
+        title: 'EP4 : 하나의 방향',
         panels: [
           { symbol: '집', speech: '각자의 오늘을 응원하던 마음' },
           { symbol: '∞', speech: '이제는 같은 방향을 바라보고' },
@@ -4605,31 +4717,84 @@
       },
     ];
 
+    let activeComicEpisodeIndex = 0;
+    let comicScrollTimer;
+
+    const hideComicScrollIndicator = () => {
+      comicScrollIndicator?.classList.remove('is-visible');
+    };
+
+    const updateComicScrollIndicator = (shouldReveal = false) => {
+      if (!comicDialog || !comicScrollIndicator || !comicScrollThumb) return;
+
+      const maxScroll = Math.max(comicDialog.scrollHeight - comicDialog.clientHeight, 0);
+      if (maxScroll <= 1 || !comicOverlay?.classList.contains('is-open')) {
+        comicScrollIndicator.classList.remove('is-visible');
+        comicScrollIndicator.hidden = true;
+        return;
+      }
+
+      const rect = comicDialog.getBoundingClientRect();
+      const trackInset = 12;
+      const trackHeight = Math.max(rect.height - trackInset * 2, 0);
+      const thumbHeight = Math.max(Math.round((comicDialog.clientHeight / comicDialog.scrollHeight) * trackHeight), 42);
+      const thumbMaxY = Math.max(trackHeight - thumbHeight, 0);
+      const progress = Math.min(Math.max(comicDialog.scrollTop / maxScroll, 0), 1);
+
+      comicScrollIndicator.hidden = false;
+      comicScrollIndicator.style.setProperty('--comic-scroll-top', `${rect.top + trackInset}px`);
+      comicScrollIndicator.style.setProperty('--comic-scroll-right', `${window.innerWidth - rect.right + 6}px`);
+      comicScrollIndicator.style.setProperty('--comic-scroll-height', `${trackHeight}px`);
+      comicScrollIndicator.style.setProperty('--comic-thumb-height', `${thumbHeight}px`);
+      comicScrollIndicator.style.setProperty('--comic-thumb-y', `${progress * thumbMaxY}px`);
+
+      if (shouldReveal) {
+        comicScrollIndicator.classList.add('is-visible');
+        window.clearTimeout(comicScrollTimer);
+        comicScrollTimer = window.setTimeout(hideComicScrollIndicator, 750);
+      }
+    };
+
     const renderComicEpisode = (episodeIndex) => {
       const episode = timelineEpisodes[episodeIndex] || timelineEpisodes[0];
       if (!comicTitle || !comicGrid) return;
       comicTitle.textContent = episode.title;
-      comicGrid.innerHTML = episode.panels.map((panel, index) => `
-        <div class="comic-panel">
-          <span class="comic-panel-number">${String(index + 1).padStart(2, '0')}</span>
-          <div class="comic-panel-scene">
-            <div class="comic-faces" aria-hidden="true">
-              <span class="comic-face">문</span>
-              <span class="comic-symbol">${panel.symbol}</span>
-              <span class="comic-face">곽</span>
+      const navButtons = [
+        episodeIndex > 0 ? '<button class="comic-nav-button" type="button" data-comic-nav="prev">◀이전화</button>' : '',
+        episodeIndex < timelineEpisodes.length - 1 ? '<button class="comic-nav-button" type="button" data-comic-nav="next">다음화▶</button>' : '',
+      ].join('');
+      const episodeBody = episode.images
+        ? `<div class="comic-image-strip">${episode.images.map((src, index) => `
+            <img src="${src}" alt="${episode.title} ${index + 1}" loading="lazy">
+          `).join('')}</div>`
+        : episode.panels.map((panel, index) => `
+            <div class="comic-panel">
+              <span class="comic-panel-number">CUT ${String(index + 1).padStart(2, '0')}</span>
+              <div class="comic-panel-scene">
+                <div class="comic-faces" aria-hidden="true">
+                  <span class="comic-face">문</span>
+                  <span class="comic-symbol">${panel.symbol}</span>
+                  <span class="comic-face">곽</span>
+                </div>
+                <p class="comic-speech">${panel.speech}</p>
+              </div>
             </div>
-            <p class="comic-speech">${panel.speech}</p>
-          </div>
-        </div>
-      `).join('');
+          `).join('');
+      comicGrid.innerHTML = episodeBody + `<div class="comic-nav">${navButtons}</div>`;
+      comicGrid.querySelectorAll('img').forEach((image) => {
+        image.addEventListener('load', () => updateComicScrollIndicator(false), { once: true });
+      });
     };
 
     const openComicOverlay = (episodeIndex) => {
       if (!comicOverlay) return;
-      renderComicEpisode(episodeIndex);
+      activeComicEpisodeIndex = Math.min(Math.max(Number(episodeIndex) || 0, 0), timelineEpisodes.length - 1);
+      renderComicEpisode(activeComicEpisodeIndex);
       comicOverlay.hidden = false;
+      if (comicDialog) comicDialog.scrollTop = 0;
       requestAnimationFrame(() => {
         comicOverlay.classList.add('is-open');
+        updateComicScrollIndicator(false);
       });
       document.body.classList.add('contact-modal-open');
     };
@@ -4638,14 +4803,28 @@
       if (!comicOverlay) return;
       comicOverlay.classList.remove('is-open');
       document.body.classList.remove('contact-modal-open');
+      window.clearTimeout(comicScrollTimer);
+      hideComicScrollIndicator();
       window.setTimeout(() => {
         if (!comicOverlay.classList.contains('is-open')) {
           comicOverlay.hidden = true;
+          if (comicScrollIndicator) comicScrollIndicator.hidden = true;
         }
       }, 250);
     };
 
     const initTimeline = () => {
+      comicDialog?.addEventListener('scroll', () => {
+        updateComicScrollIndicator(true);
+      }, { passive: true });
+
+      comicGrid?.addEventListener('click', (event) => {
+        const navButton = event.target.closest('[data-comic-nav]');
+        if (!navButton) return;
+        const direction = navButton.dataset.comicNav === 'prev' ? -1 : 1;
+        openComicOverlay(activeComicEpisodeIndex + direction);
+      });
+
       timelineItems.forEach((item) => {
         item.addEventListener('click', () => {
           openComicOverlay(Number(item.dataset.comicEpisode) || 0);
@@ -4981,11 +5160,13 @@
       if (galleryLightbox?.classList.contains('is-open')) {
         setGalleryTranslate();
       }
+      updateComicScrollIndicator(false);
     });
     window.addEventListener('orientationchange', () => {
       window.setTimeout(() => {
         setStableAppHeight(true);
         scheduleCustomScrollbarUpdate();
+        updateComicScrollIndicator(false);
       }, 320);
     });
     updateCustomScrollbar();
