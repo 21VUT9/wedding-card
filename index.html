@@ -1901,16 +1901,6 @@
       z-index: 2;
     }
 
-    .comic-title {
-      margin: 0 46px 18px;
-      color: #fff;
-      font-family: 'Noto Sans KR', Georgia, 'Times New Roman', sans-serif;
-      font-size: 16px;
-      line-height: 1.5;
-      text-align: center;
-      word-break: keep-all;
-    }
-
     .comic-grid {
       display: grid;
       gap: 0;
@@ -3393,10 +3383,9 @@
       </div>
     </section>
 
-    <div class="comic-overlay" id="comicOverlay" role="dialog" aria-modal="true" aria-labelledby="comicTitle" hidden>
+    <div class="comic-overlay" id="comicOverlay" role="dialog" aria-modal="true" aria-label="우리의 연애 이야기" hidden>
       <div class="comic-dialog">
         <button class="comic-close" type="button" aria-label="웹툰 닫기">×</button>
-        <h3 class="comic-title" id="comicTitle">EP1 : 그날,</h3>
         <div class="comic-grid" id="comicGrid"></div>
       </div>
       <div class="comic-scroll-indicator" id="comicScrollIndicator" aria-hidden="true">
@@ -3657,7 +3646,6 @@
     const messageDeleteAlert = document.getElementById('messageDeleteAlert');
     const comicOverlay = document.getElementById('comicOverlay');
     const comicClose = document.querySelector('.comic-close');
-    const comicTitle = document.getElementById('comicTitle');
     const comicGrid = document.getElementById('comicGrid');
     const comicDialog = document.querySelector('.comic-dialog');
     const comicScrollIndicator = document.getElementById('comicScrollIndicator');
@@ -4757,8 +4745,7 @@
 
     const renderComicEpisode = (episodeIndex) => {
       const episode = timelineEpisodes[episodeIndex] || timelineEpisodes[0];
-      if (!comicTitle || !comicGrid) return;
-      comicTitle.textContent = episode.title;
+      if (!comicGrid) return;
       const navButtons = [
         episodeIndex > 0 ? '<button class="comic-nav-button" type="button" data-comic-nav="prev">◀이전화</button>' : '',
         episodeIndex < timelineEpisodes.length - 1 ? '<button class="comic-nav-button" type="button" data-comic-nav="next">다음화▶</button>' : '',
