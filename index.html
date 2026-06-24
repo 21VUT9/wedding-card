@@ -104,6 +104,10 @@
       touch-action: pan-y;
     }
 
+    main > section {
+      scroll-margin-top: 72px;
+    }
+
     body {
       display: flex;
       justify-content: center;
@@ -164,6 +168,133 @@
       opacity: 1;
       pointer-events: auto;
       transform: translateY(0) scale(1);
+    }
+
+    .section-menu-toggle {
+      position: fixed;
+      top: 16px;
+      left: max(16px, calc((100vw - 430px) / 2 + 16px));
+      z-index: 140;
+      width: 30px;
+      height: 30px;
+      border: 1px solid rgba(111, 131, 150, .18);
+      border-radius: 999px;
+      background: rgba(247, 251, 254, .46);
+      color: rgba(82, 105, 127, .72);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 22px rgba(36, 52, 71, .08);
+      backdrop-filter: blur(8px);
+      cursor: pointer;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-8px) scale(.92);
+      transition: opacity .25s ease, transform .25s ease, background .2s ease;
+    }
+
+    .section-menu-toggle.is-visible {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0) scale(1);
+    }
+
+    .section-menu-toggle.is-open {
+      background: rgba(234, 243, 249, .68);
+    }
+
+    .section-menu-toggle span,
+    .section-menu-toggle::before,
+    .section-menu-toggle::after {
+      content: '';
+      width: 13px;
+      height: 1px;
+      border-radius: 999px;
+      background: currentColor;
+      display: block;
+    }
+
+    .section-menu-toggle span {
+      margin: 4px 0;
+    }
+
+    .section-menu-panel {
+      position: fixed;
+      top: 54px;
+      left: max(16px, calc((100vw - 430px) / 2 + 16px));
+      z-index: 139;
+      width: min(178px, calc(100vw - 32px));
+      padding: 7px;
+      border: 1px solid rgba(111, 131, 150, .16);
+      border-radius: 8px;
+      background: rgba(247, 251, 254, .78);
+      box-shadow: 0 14px 34px rgba(36, 52, 71, .12);
+      backdrop-filter: blur(12px);
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-6px);
+      transition: opacity .2s ease, transform .2s ease;
+    }
+
+    .section-menu-panel.is-open {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+
+    .section-menu-panel a {
+      display: block;
+      padding: 9px 10px;
+      border-radius: 6px;
+      color: rgba(36, 52, 71, .76);
+      font-family: 'Noto Sans KR', Georgia, 'Times New Roman', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .section-menu-panel a:active {
+      background: rgba(220, 234, 244, .72);
+    }
+
+    .scroll-top-button {
+      position: fixed;
+      right: max(18px, calc((100vw - 430px) / 2 + 18px));
+      bottom: max(18px, env(safe-area-inset-bottom));
+      z-index: 110;
+      width: 42px;
+      height: 42px;
+      border: 1px solid rgba(111, 131, 150, .18);
+      border-radius: 999px;
+      background: rgba(247, 251, 254, .42);
+      color: rgba(82, 105, 127, .72);
+      display: grid;
+      place-items: center;
+      font-family: 'Noto Sans KR', Georgia, 'Times New Roman', sans-serif;
+      font-size: 22px;
+      font-weight: 300;
+      line-height: 1;
+      box-shadow: 0 8px 22px rgba(36, 52, 71, .08);
+      backdrop-filter: blur(8px);
+      cursor: pointer;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(10px) scale(.92);
+      transition: opacity .25s ease, transform .25s ease, background .2s ease;
+    }
+
+    .scroll-top-button.is-visible {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0) scale(1);
+    }
+
+    .scroll-top-button:active {
+      background: rgba(234, 243, 249, .62);
+      transform: translateY(1px) scale(.98);
     }
 
     .music-toggle .play-icon {
@@ -2985,6 +3116,21 @@
     <audio id="bgm" src="sounds/스매쉬-01-Never Ending Story.mp3" preload="auto" loop></audio>
     <audio id="paperOpenSound" src="sounds/paperopen.mp3" preload="auto"></audio>
     <audio id="writingSound" src="sounds/writing.mp3" preload="auto"></audio>
+    <button class="section-menu-toggle" type="button" aria-label="섹션 메뉴 열기" aria-expanded="false" aria-controls="sectionMenu">
+      <span aria-hidden="true"></span>
+    </button>
+    <nav class="section-menu-panel" id="sectionMenu" aria-label="섹션 바로가기">
+      <a href="#intro">처음으로</a>
+      <a href="#introMessage">인삿말</a>
+      <a href="#weddingDay">예식 일정</a>
+      <a href="#location">오시는 길</a>
+      <a href="#aboutUs">신랑 신부</a>
+      <a href="#timeline">우리 이야기</a>
+      <a href="#gallery">갤러리</a>
+      <a href="#guessWho">신랑 신부 문답</a>
+      <a href="#giftAccount">마음 전하실 곳</a>
+      <a href="#guestMessage">축하 메시지</a>
+    </nav>
     <button class="music-toggle" type="button" aria-label="배경음악 켜기" aria-pressed="false">
       <span class="play-icon" aria-hidden="true"></span>
       <span class="equalizer" aria-hidden="true">
@@ -2996,8 +3142,9 @@
       <div class="custom-scrollbar-track"></div>
       <div class="custom-scrollbar-thumb"></div>
     </div>
+    <button class="scroll-top-button" type="button" aria-label="맨 위로 이동">↑</button>
 
-    <section class="intro" aria-label="wedding intro">
+    <section class="intro" id="intro" aria-label="wedding intro">
       <div class="letter-stage" aria-label="sealed letter">
         <img class="letter-image" src="images/letter.png" alt="" />
         <img class="wax-image" src="images/wax.png" alt="" />
@@ -3013,7 +3160,7 @@
       <div class="scroll-hint">SCROLL</div>
     </section>
 
-    <section class="intro-message" aria-label="invitation message">
+    <section class="intro-message" id="introMessage" aria-label="invitation message">
       <img class="ring-divider" src="images/ring.png" alt="" aria-hidden="true" />
 
       <div>
@@ -3047,7 +3194,7 @@
       </div>
     </section>
 
-    <section class="wedding-day" aria-label="wedding day calendar">
+    <section class="wedding-day" id="weddingDay" aria-label="wedding day calendar">
       <h3>WEDDING DAY</h3>
       <p class="wedding-date-main">2026년 9월 13일 일요일 | 오후 12시</p>
       <p class="wedding-date-sub">Sunday, September 13, 2026 | PM 12:00</p>
@@ -3129,7 +3276,7 @@
       <p class="countdown-message" id="countdownMessage">병구 <b>♥</b> 지혜의 결혼식이 곧 시작됩니다.<span class="jp-text tight">ビョング ♥ ジヘの結婚式がまもなく始まります。</span></p>
     </section>
 
-    <section class="location" aria-label="wedding location">
+    <section class="location" id="location" aria-label="wedding location">
       <h3>LOCATION</h3>
       <div class="location-summary">
         <p class="venue-name">JK아트컨벤션 4층 아트리움</p>
@@ -3205,7 +3352,7 @@
       </div>
     </section>
 
-    <section class="about-us" aria-label="about us">
+    <section class="about-us" id="aboutUs" aria-label="about us">
       <h3>ABOUT US</h3>
       <p class="about-kicker">저희 커플을 소개합니다</p>
       <p class="about-subtitle">하나로 이어진 두개의 우주<span class="jp-text tight">一つにつながる二つの宇宙</span></p>
@@ -3345,7 +3492,7 @@
       </div>
     </div>
 
-    <section class="timeline" aria-label="our timeline">
+    <section class="timeline" id="timeline" aria-label="our timeline">
       <h3>OUR STORY</h3>
       <p class="timeline-subtitle">우리의 연애 웹툰</p>
 
@@ -3410,7 +3557,7 @@
       </div>
     </div>
 
-    <section class="gallery">
+    <section class="gallery" id="gallery">
       <h3>GALLERY</h3>
       <div class="gallery-grid" aria-label="웨딩 갤러리 피드">
         <button class="gallery-item" type="button" data-gallery-post="0" aria-label="갤러리 사진 1 열기"></button>
@@ -3437,13 +3584,13 @@
       </div>
     </div>
 
-    <section class="guess-who" aria-label="guest vote quiz">
+    <section class="guess-who" id="guessWho" aria-label="guest vote quiz">
       <h3>GUESS WHO?</h3>
       <p class="guess-kicker">모두 함께하는 신랑 신부 문답 인터뷰!</p>
       <div class="guess-list" id="guessList"></div>
     </section>
 
-    <section class="gift-account" aria-label="마음 전하실 곳">
+    <section class="gift-account" id="giftAccount" aria-label="마음 전하실 곳">
       <div class="gift-divider" aria-hidden="true"></div>
       <h3>마음 전하실 곳</h3>
       <p class="gift-subtitle">
@@ -3475,10 +3622,10 @@
               </div>
               <div class="gift-bank-row">
                 <span>
-                  <span class="gift-bank">토스은행</span>
-                  <span class="gift-number">123-456-789012</span>
+                  <span class="gift-bank">농협</span>
+                  <span class="gift-number">920-02-027160</span>
                 </span>
-                <button class="gift-copy" type="button" data-account="123-456-789012">복사하기</button>
+                <button class="gift-copy" type="button" data-account="920-02-027160">복사하기</button>
               </div>
             </div>
           </div>
@@ -3532,7 +3679,7 @@
     </section>
     <div class="gift-toast" id="giftToast" role="status" aria-live="polite">계좌번호가 복사되었습니다</div>
 
-    <section class="guest-message" aria-label="축하 메시지">
+    <section class="guest-message" id="guestMessage" aria-label="축하 메시지">
       <h3>MESSAGE</h3>
       <p class="guest-message-subtitle">저희 둘에게 따뜻한 방명록을 남겨주세요<span class="jp-text tight">私たち二人に温かいメッセージを残してください</span></p>
       <div class="message-list" id="messageList"></div>
@@ -3584,9 +3731,9 @@
       </p>
       <div class="signature">신랑 문병구 · 신부 곽지혜</div>
       <p class="copyright-note">
-        Copyright © 2026. All rights reserved.<br />
         이 청첩장은 저희 부부가 직접 제작, 디자인 하였습니다.<br />
-        <span class="copyright-note-small">この招待状は私たち夫婦がデザイン・制作いたしました。</span>
+        <span class="copyright-note-small">この招待状は私たち夫婦がデザイン・制作いたしました。</span><br />
+        Copyright © 2026. All rights reserved.
       </p>
     </section>
   </main>
@@ -3638,6 +3785,9 @@
     const contactTabs = document.querySelectorAll('.contact-tab');
     const contactPanels = document.querySelectorAll('.contact-panel');
     const contactCalls = document.querySelectorAll('.contact-call');
+    const sectionMenuToggle = document.querySelector('.section-menu-toggle');
+    const sectionMenuPanel = document.getElementById('sectionMenu');
+    const sectionMenuLinks = document.querySelectorAll('.section-menu-panel a');
     const timelineItems = document.querySelectorAll('.timeline-item');
     const sectionTitles = document.querySelectorAll('main > section:not(.gift-account) > h3');
     const galleryItems = document.querySelectorAll('.gallery-item');
@@ -3673,6 +3823,7 @@
     const comicScrollThumb = document.getElementById('comicScrollThumb');
     const customScrollbar = document.querySelector('.custom-scrollbar');
     const customScrollThumb = document.querySelector('.custom-scrollbar-thumb');
+    const scrollTopButton = document.querySelector('.scroll-top-button');
     const mapPreview = document.querySelector('.map-preview');
     const naverMapContainer = document.getElementById('naverMap');
     const countdownNodes = {
@@ -3748,12 +3899,38 @@
       }
     });
 
+    const updateScrollTopButton = () => {
+      if (!scrollTopButton) return;
+
+      const shouldShow = !introLocked && window.scrollY > window.innerHeight * 0.55;
+      scrollTopButton.classList.toggle('is-visible', shouldShow);
+    };
+
+    const setSectionMenuOpen = (isOpen) => {
+      if (!sectionMenuToggle || !sectionMenuPanel) return;
+
+      sectionMenuToggle.classList.toggle('is-open', isOpen);
+      sectionMenuToggle.setAttribute('aria-expanded', String(isOpen));
+      sectionMenuToggle.setAttribute('aria-label', isOpen ? '섹션 메뉴 닫기' : '섹션 메뉴 열기');
+      sectionMenuPanel.classList.toggle('is-open', isOpen);
+    };
+
+    const updateSectionMenuButton = () => {
+      if (!sectionMenuToggle) return;
+
+      const shouldShow = !introLocked && window.scrollY > 24;
+      sectionMenuToggle.classList.toggle('is-visible', shouldShow);
+      if (!shouldShow) setSectionMenuOpen(false);
+    };
+
     const unlockIntroScroll = () => {
       if (!introLocked) return;
       introLocked = false;
       document.body.classList.remove('intro-locked');
       window.removeEventListener('wheel', preventIntroScroll);
       window.removeEventListener('touchmove', preventIntroScroll);
+      updateScrollTopButton();
+      updateSectionMenuButton();
     };
 
     const updateCustomScrollbar = () => {
@@ -3773,6 +3950,38 @@
       customScrollbar.style.setProperty('--scroll-thumb-y', `${progress * maxThumbMove}px`);
       customScrollbar.hidden = scrollHeight <= viewportHeight + 1;
     };
+
+    scrollTopButton?.addEventListener('click', () => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth',
+      });
+    });
+
+    sectionMenuToggle?.addEventListener('click', () => {
+      setSectionMenuOpen(!sectionMenuToggle.classList.contains('is-open'));
+    });
+
+    sectionMenuLinks.forEach((link) => {
+      link.addEventListener('click', (event) => {
+        const targetId = link.getAttribute('href')?.slice(1);
+        const target = targetId ? document.getElementById(targetId) : null;
+        if (!target) return;
+
+        event.preventDefault();
+        setSectionMenuOpen(false);
+        target.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+        });
+      });
+    });
+
+    document.addEventListener('click', (event) => {
+      if (!sectionMenuPanel?.classList.contains('is-open')) return;
+      if (event.target.closest('.section-menu-toggle, .section-menu-panel')) return;
+      setSectionMenuOpen(false);
+    });
 
     const scheduleCustomScrollbarUpdate = () => {
       window.clearTimeout(customScrollbarResizeTimer);
@@ -5220,12 +5429,18 @@
       bgm.currentTime = 0;
       setMusicState(false);
       updateCustomScrollbar();
+      updateScrollTopButton();
+      updateSectionMenuButton();
     });
 
     window.addEventListener('scroll', updateCustomScrollbar, { passive: true });
+    window.addEventListener('scroll', updateScrollTopButton, { passive: true });
+    window.addEventListener('scroll', updateSectionMenuButton, { passive: true });
     window.addEventListener('resize', () => {
       setStableAppHeight();
       scheduleCustomScrollbarUpdate();
+      updateScrollTopButton();
+      updateSectionMenuButton();
       if (galleryLightbox?.classList.contains('is-open')) {
         setGalleryTranslate();
       }
@@ -5239,6 +5454,8 @@
       }, 320);
     });
     updateCustomScrollbar();
+    updateScrollTopButton();
+    updateSectionMenuButton();
     updateCountdown();
     initMbtiGames();
     initTimeline();
@@ -5272,6 +5489,9 @@
     });
 
     window.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && sectionMenuPanel?.classList.contains('is-open')) {
+        setSectionMenuOpen(false);
+      }
       if (event.key === 'Escape' && contactOverlay?.classList.contains('is-open')) {
         closeContactOverlay();
       }
