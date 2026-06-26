@@ -170,6 +170,50 @@
       transform: translateY(0) scale(1);
     }
 
+    .language-switch {
+      position: fixed;
+      top: 16px;
+      left: max(54px, calc((100vw - 430px) / 2 + 54px));
+      z-index: 141;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 62px;
+      height: 30px;
+      padding: 0 12px;
+      border: 1px solid rgba(111, 131, 150, .18);
+      border-radius: 999px;
+      background: rgba(247, 251, 254, .56);
+      box-shadow: 0 8px 22px rgba(36, 52, 71, .08);
+      backdrop-filter: blur(9px);
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-8px) scale(.92);
+      transition: opacity .25s ease, transform .25s ease, background .2s ease, color .2s ease, box-shadow .2s ease;
+    }
+
+    .language-switch.is-visible {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0) scale(1);
+    }
+
+    .language-option {
+      color: rgba(82, 105, 127, .66);
+      font-family: 'Noto Sans KR', Georgia, 'Times New Roman', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .language-switch.is-active {
+      border-color: rgba(21, 34, 55, .82);
+      background: rgba(21, 34, 55, .94);
+      color: #fff;
+      box-shadow: 0 10px 26px rgba(21, 34, 55, .24);
+    }
+
     .section-menu-toggle {
       position: fixed;
       top: 16px;
@@ -727,6 +771,24 @@
       letter-spacing: 0;
       text-transform: none;
       word-break: keep-all;
+    }
+
+    body[data-lang="ko"] .jp-text,
+    body[data-lang="ja"] .ko-text {
+      display: none !important;
+    }
+
+    body[data-lang="ja"] .jp-text {
+      display: block;
+      margin-top: 0;
+      color: inherit;
+      font-size: 1em;
+      line-height: inherit;
+    }
+
+    body[data-lang="ja"] .jp-text.tight {
+      font-size: 1em;
+      line-height: inherit;
     }
 
     .jp-text.tight {
@@ -2487,7 +2549,7 @@
     }
 
     .guess-choice::after {
-      content: '선택 / 選択';
+      content: attr(data-choice-label);
       color: #7fa9bd;
       font-size: 12px;
       font-weight: 700;
@@ -2792,6 +2854,31 @@
       word-break: keep-all;
       user-select: text;
       -webkit-user-select: text;
+    }
+
+    .message-card-body.is-collapsed {
+      display: -webkit-box;
+      overflow: hidden;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 5;
+    }
+
+    .message-expand {
+      display: none;
+      margin: -8px 0 14px;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: #5b9bb8;
+      font-family: 'Noto Sans KR', Georgia, 'Times New Roman', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1.4;
+      cursor: pointer;
+    }
+
+    .message-card.has-overflow .message-expand {
+      display: inline-block;
     }
 
     .message-card-meta {
@@ -3111,7 +3198,7 @@
     }
   </style>
 </head>
-<body>
+<body data-lang="ko">
   <main class="phone-shell">
     <audio id="bgm" src="sounds/스매쉬-01-Never Ending Story.mp3" preload="auto" loop></audio>
     <audio id="paperOpenSound" src="sounds/paperopen.mp3" preload="auto"></audio>
@@ -3131,6 +3218,7 @@
       <a href="#giftAccount">마음 전하실 곳</a>
       <a href="#guestMessage">축하 메시지</a>
     </nav>
+    <button class="language-switch language-option" type="button" aria-label="日本語 보기" aria-pressed="false">日本語</button>
     <button class="music-toggle" type="button" aria-label="배경음악 켜기" aria-pressed="false">
       <span class="play-icon" aria-hidden="true"></span>
       <span class="equalizer" aria-hidden="true">
@@ -3785,6 +3873,7 @@
     const contactTabs = document.querySelectorAll('.contact-tab');
     const contactPanels = document.querySelectorAll('.contact-panel');
     const contactCalls = document.querySelectorAll('.contact-call');
+    const languageButtons = document.querySelectorAll('.language-option');
     const sectionMenuToggle = document.querySelector('.section-menu-toggle');
     const sectionMenuPanel = document.getElementById('sectionMenu');
     const sectionMenuLinks = document.querySelectorAll('.section-menu-panel a');
@@ -3836,6 +3925,8 @@
     const weddingDate = new Date('2026-09-13T12:00:00+09:00');
     const naverMapKeyId = 'dsxfhx8kwi';
     const venuePosition = { lat: 37.5177695, lng: 126.9000792 };
+    const languageStorageKey = 'wedding-card-language';
+    let currentLanguage = localStorage.getItem(languageStorageKey) === 'ja' ? 'ja' : 'ko';
     const writingSoundDuration = 4700;
     const bgmDelayAfterWriting = 1000;
     const introScrollUnlockDelay = 5000;
@@ -3868,6 +3959,337 @@
     let messagePage = 1;
     let guestMessages = [];
     let pendingDeleteMessageId = null;
+
+    const copy = {
+      ko: {
+        sectionMenuLabel: '섹션 바로가기',
+        menuOpen: '섹션 메뉴 열기',
+        menuClose: '섹션 메뉴 닫기',
+        nav: ['처음으로', '인삿말', '예식 일정', '오시는 길', '신랑 신부', '우리 이야기', '갤러리', '신랑 신부 문답', '마음 전하실 곳', '축하 메시지'],
+        musicOn: '배경음악 켜기',
+        musicOff: '배경음악 끄기',
+        musicToast: '배경음악이준비되었습니다',
+        scrollTop: '맨 위로 이동',
+        openLetter: '편지 열기',
+        introLabel: 'wedding intro',
+        messageLabel: 'invitation message',
+        coupleNames: '신랑 문병구 · 신부 곽지혜',
+        weddingDate: '2026년 9월 13일 일요일 | 오후 12시',
+        weddingDateSub: 'Sunday, September 13, 2026 | PM 12:00',
+        calendarLabel: '2026년 9월 달력',
+        weddingDayLabel: '결혼식 당일',
+        countdownSoon: '병구 <b>♥</b> 지혜의 결혼식이 곧 시작됩니다.',
+        countdownAfter: (days) => `병구 <b>♥</b> 지혜가 함께한 지 ${days}일째입니다.`,
+        countdownBefore: (days) => `병구 <b>♥</b> 지혜의 결혼식이 ${days}일 남았습니다.`,
+        venue: 'JK아트컨벤션 4층 아트리움',
+        address: '서울 영등포구 문래로 164 SK리더스뷰 4층 JK아트컨벤션',
+        mapLabel: 'JK아트컨벤션 지도',
+        car: '자차',
+        bus: '버스',
+        subway: '지하철',
+        parking: '주차',
+        navigation: "내비게이션 : 'JK아트컨벤션' 검색",
+        oldAddress: '서울 영등포구 문래동3가 55-16',
+        bus1: '문래동주민센터 하차 > 문래동 주민센터 방면 > 도보2분',
+        bus2: '문래동주민센터 하차 > 정면',
+        bus3: '영일시장.록스 하차 > 영등포 SK리더스뷰 아파트 방면 > 도보3분',
+        parkingGuide: '본건물 만차시 외부주차장 안내드립니다. 만차시 직원의 안내를 받아 외부주차장을 이용해주세요.',
+        aboutKicker: '저희 커플을 소개합니다',
+        groomRole: '신랑',
+        brideRole: '신부',
+        groomFamily: '문철주 고 전은아의 아들',
+        brideFamily: '곽상원 이종선의 딸',
+        birth: '출생',
+        groomBirth: '95년 8월',
+        brideBirth: '95년 10월',
+        contactOpen: '축하 연락하기',
+        contactSubtitle: '직접 축하의 마음을 전해보세요',
+        toGroom: '신랑에게',
+        toBride: '신부에게',
+        groomFather: '신랑 아버지',
+        brideFather: '신부 아버지',
+        brideMother: '신부 어머니',
+        call: '전화하기',
+        timelineSubtitle: '우리의 연애 웹툰',
+        timelineTitles: ['EP1 : 그날,', 'EP2 : 이러려고 만났나 봅니다.', 'EP3 : 취미생활上', 'EP4 : 취미생활下', 'EP5 : 데이트', 'EP6 : 고마운 친구들'],
+        comicLabel: '우리의 연애 웹툰',
+        comicClose: '웹툰 닫기',
+        galleryLabel: '웨딩 갤러리 피드',
+        galleryLightboxLabel: '갤러리 크게 보기',
+        galleryClose: '갤러리 닫기',
+        galleryItem: (index) => `갤러리 사진 ${index + 1} 열기`,
+        guessKicker: '모두 함께하는 신랑 신부 문답 인터뷰!',
+        choose: '선택',
+        responseRate: '응답률',
+        giftTitle: '마음 전하실 곳',
+        giftSubtitle: '참석이 어려우신 분들을 위해 기재했습니다<br>너그러운 마음으로 양해 부탁드립니다',
+        giftGroom: '신랑측에게',
+        giftBride: '신부측에게',
+        copyAccount: '복사하기',
+        giftToast: '계좌번호가 복사되었습니다',
+        messageSubtitle: '저희 둘에게 따뜻한 방명록을 남겨주세요',
+        messagePageLabel: '메시지 페이지 이동',
+        messageWrite: '메시지 남기기',
+        messageModalTitle: '축하 메시지 작성하기',
+        messageModalSubtitle: '저희 둘의 결혼을 함께 축하해 주세요',
+        namePlaceholder: '성함을 남겨주세요',
+        passwordPlaceholder: '비밀번호를 입력해 주세요',
+        bodyPlaceholder: '200자 이내로 작성해 주세요',
+        messageSubmit: '작성 완료',
+        messageDeleteTitle: '글 삭제',
+        messageDeleteNote: '관리자 및 작성자만 글을 삭제하실 수 있습니다',
+        messageDeleteAlert: '비밀번호가 일치하지 않습니다',
+        deleteSubmit: '삭제하기',
+        closeMessage: '메시지 작성 닫기',
+        closeDelete: '글 삭제 닫기',
+        deleteMessage: '메시지 삭제',
+        viewFullMessage: '... 전체보기',
+        collapseMessage: '접기',
+        pageLabel: (page) => `${page}페이지`,
+        mbtiAnswer: (answer) => `정답 : ${answer}`,
+        endingSignature: '신랑 문병구 · 신부 곽지혜',
+        copyright: '이 청첩장은 저희 부부가 직접 제작, 디자인 하였습니다.',
+      },
+      ja: {
+        sectionMenuLabel: 'セクションへ移動',
+        menuOpen: 'セクションメニューを開く',
+        menuClose: 'セクションメニューを閉じる',
+        nav: ['トップへ', 'ご挨拶', '挙式日程', 'アクセス', '新郎新婦', '二人の物語', 'ギャラリー', '新郎新婦Q&A', 'お心遣い', 'メッセージ'],
+        musicOn: 'BGMを再生',
+        musicOff: 'BGMを停止',
+        musicToast: 'BGMの準備ができました',
+        scrollTop: '一番上へ戻る',
+        openLetter: '招待状を開く',
+        introLabel: 'wedding intro',
+        messageLabel: 'invitation message',
+        coupleNames: '新郎 ムン・ビョング · 新婦 クァク・ジヘ',
+        weddingDate: '2026年9月13日 日曜日 | 12:00',
+        weddingDateSub: 'Sunday, September 13, 2026 | PM 12:00',
+        calendarLabel: '2026年9月カレンダー',
+        weddingDayLabel: '結婚式当日',
+        countdownSoon: 'ビョング <b>♥</b> ジヘの結婚式がまもなく始まります。',
+        countdownAfter: (days) => `ビョング <b>♥</b> ジヘが共に歩み始めて${days}日目です。`,
+        countdownBefore: (days) => `ビョング <b>♥</b> ジヘの結婚式まであと${days}日です。`,
+        venue: 'JKアートコンベンション 4階 アトリウム',
+        address: 'ソウル永登浦区文来路164 SKリーダーズビュー4階 JKアートコンベンション',
+        mapLabel: 'JKアートコンベンション 地図',
+        car: 'お車',
+        bus: 'バス',
+        subway: '地下鉄',
+        parking: '駐車場',
+        navigation: "ナビゲーションで「JKアートコンベンション」を検索",
+        oldAddress: 'ソウル永登浦区文来洞3街 55-16',
+        bus1: '文来洞住民センター下車 > 文来洞住民センター方面 > 徒歩2分',
+        bus2: '文来洞住民センター下車 > 正面',
+        bus3: '永一市場・ROX下車 > 永登浦SKリーダーズビュー方面 > 徒歩3分',
+        parkingGuide: '本館駐車場が満車の場合は、スタッフの案内に従って外部駐車場をご利用ください。',
+        aboutKicker: '私たち二人を紹介します',
+        groomRole: '新郎',
+        brideRole: '新婦',
+        groomFamily: 'ムン・チョルジュ、故チョン・ウナの息子',
+        brideFamily: 'クァク・サンウォン、イ・ジョンソンの娘',
+        birth: '生まれ',
+        groomBirth: '1995年8月',
+        brideBirth: '1995年10月',
+        contactOpen: 'お祝いの連絡',
+        contactSubtitle: '直接お祝いの気持ちをお伝えください',
+        toGroom: '新郎へ',
+        toBride: '新婦へ',
+        groomFather: '新郎の父',
+        brideFather: '新婦の父',
+        brideMother: '新婦の母',
+        call: '電話する',
+        timelineSubtitle: '私たちの恋愛ウェブトゥーン',
+        timelineTitles: ['EP1 : あの日、', 'EP2 : こうなるために出会ったのかも。', 'EP3 : 趣味生活 上', 'EP4 : 趣味生活 下', 'EP5 : デート', 'EP6 : 大切な友人たち'],
+        comicLabel: '私たちの恋愛ウェブトゥーン',
+        comicClose: 'ウェブトゥーンを閉じる',
+        galleryLabel: 'ウェディングギャラリー',
+        galleryLightboxLabel: 'ギャラリーを大きく見る',
+        galleryClose: 'ギャラリーを閉じる',
+        galleryItem: (index) => `ギャラリー写真${index + 1}を開く`,
+        guessKicker: 'みんなで楽しむ新郎新婦Q&A!',
+        choose: '選択',
+        responseRate: '回答率',
+        giftTitle: 'お心遣い',
+        giftSubtitle: 'ご出席が難しい方のために記載しております<br>温かいお気持ちでご理解いただけますと幸いです',
+        giftGroom: '新郎側へ',
+        giftBride: '新婦側へ',
+        copyAccount: 'コピー',
+        giftToast: '口座番号をコピーしました',
+        messageSubtitle: '私たち二人に温かいメッセージを残してください',
+        messagePageLabel: 'メッセージページ移動',
+        messageWrite: 'メッセージを書く',
+        messageModalTitle: 'お祝いメッセージを書く',
+        messageModalSubtitle: '私たち二人の結婚を一緒に祝ってください',
+        namePlaceholder: 'お名前を入力してください',
+        passwordPlaceholder: 'パスワードを入力してください',
+        bodyPlaceholder: '200字以内でご記入ください',
+        messageSubmit: '投稿する',
+        messageDeleteTitle: '投稿の削除',
+        messageDeleteNote: '管理者および投稿者のみ削除できます',
+        messageDeleteAlert: 'パスワードが一致しません',
+        deleteSubmit: '削除する',
+        closeMessage: 'メッセージ作成を閉じる',
+        closeDelete: '投稿削除を閉じる',
+        deleteMessage: 'メッセージを削除',
+        viewFullMessage: '... 全文を見る',
+        collapseMessage: '閉じる',
+        pageLabel: (page) => `${page}ページ`,
+        mbtiAnswer: (answer) => `正解：${answer}`,
+        endingSignature: '新郎 ムン・ビョング · 新婦 クァク・ジヘ',
+        copyright: 'この招待状は私たち夫婦がデザイン・制作いたしました。',
+      },
+    };
+
+    const getCopy = (key) => copy[currentLanguage][key];
+
+    const setText = (selector, value) => {
+      const node = document.querySelector(selector);
+      if (node) node.textContent = value;
+    };
+
+    const setHtml = (selector, value) => {
+      const node = document.querySelector(selector);
+      if (node) node.innerHTML = value;
+    };
+
+    const wrapLanguagePairs = () => {
+      document.querySelectorAll('.jp-text').forEach((jpText) => {
+        const parent = jpText.parentElement;
+        if (!parent || parent.dataset.langPairWrapped === 'true') return;
+
+        const koText = document.createElement('span');
+        koText.className = 'ko-text';
+        Array.from(parent.childNodes).forEach((node) => {
+          if (node !== jpText) koText.appendChild(node);
+        });
+        parent.insertBefore(koText, jpText);
+        parent.dataset.langPairWrapped = 'true';
+      });
+    };
+
+    const applyLanguage = (lang = currentLanguage) => {
+      currentLanguage = lang === 'ja' ? 'ja' : 'ko';
+      localStorage.setItem(languageStorageKey, currentLanguage);
+      const t = copy[currentLanguage];
+
+      document.documentElement.lang = currentLanguage;
+      document.body.dataset.lang = currentLanguage;
+      wrapLanguagePairs();
+
+      languageButtons.forEach((button) => {
+        const isJapanese = currentLanguage === 'ja';
+        button.classList.toggle('is-active', isJapanese);
+        button.setAttribute('aria-pressed', String(isJapanese));
+        button.setAttribute('aria-label', isJapanese ? '日本語 보기 해제' : '日本語 보기');
+        button.textContent = '日本語';
+      });
+
+      sectionMenuPanel?.setAttribute('aria-label', t.sectionMenuLabel);
+      sectionMenuLinks.forEach((link, index) => {
+        link.textContent = t.nav[index] || link.textContent;
+      });
+      if (sectionMenuToggle) {
+        const isOpen = sectionMenuToggle.classList.contains('is-open');
+        sectionMenuToggle.setAttribute('aria-label', isOpen ? t.menuClose : t.menuOpen);
+      }
+      musicToggle?.setAttribute('aria-label', musicToggle?.getAttribute('aria-pressed') === 'true' ? t.musicOff : t.musicOn);
+      setText('.music-toast', t.musicToast);
+      scrollTopButton?.setAttribute('aria-label', t.scrollTop);
+      waxHitArea?.setAttribute('aria-label', t.openLetter);
+      intro?.setAttribute('aria-label', t.introLabel);
+      introMessage?.setAttribute('aria-label', t.messageLabel);
+      setText('.couple-names', t.coupleNames);
+      setText('.wedding-date-main', t.weddingDate);
+      setText('.wedding-date-sub', t.weddingDateSub);
+      document.querySelector('.calendar-wrap')?.setAttribute('aria-label', t.calendarLabel);
+      document.querySelector('.is-wedding-day')?.setAttribute('aria-label', t.weddingDayLabel);
+      setText('.venue-name', t.venue);
+      setText('.venue-address', t.address);
+      mapPreview?.setAttribute('aria-label', t.mapLabel);
+      setText('.location-details .transport-section:nth-child(1) .transport-title span', t.car);
+      setText('.location-details .transport-section:nth-child(2) .transport-title span', t.bus);
+      setText('.location-details .transport-section:nth-child(3) .transport-title-copy span:first-child', t.subway);
+      setText('.location-details .transport-section:nth-child(4) .transport-title span', t.parking);
+      setText('.location-details .transport-section:nth-child(1) p:nth-of-type(1)', t.navigation);
+      setText('.location-details .transport-section:nth-child(1) p:nth-of-type(2)', t.oldAddress);
+      setText('.location-details .transport-section:nth-child(2) .transport-route:nth-of-type(1) p', t.bus1);
+      setText('.location-details .transport-section:nth-child(2) .transport-route:nth-of-type(2) p', t.bus2);
+      setText('.location-details .transport-section:nth-child(2) .transport-route:nth-of-type(3) p', t.bus3);
+      setText('.location-details .transport-section:nth-child(4) p', t.parkingGuide);
+      setText('.about-kicker', t.aboutKicker);
+      setText('.about-person:nth-child(1) .about-role', t.groomRole);
+      setText('.about-person:nth-child(2) .about-role', t.brideRole);
+      setHtml('.about-person:nth-child(1) .about-family', currentLanguage === 'ko' ? '문철주<img class="about-flower" src="images/wf.png" alt="고" />전은아의 아들' : t.groomFamily);
+      setText('.about-person:nth-child(2) .about-family', t.brideFamily);
+      setHtml('.about-person:nth-child(1) .about-list li:nth-child(1)', `<strong>${t.birth}</strong> ${t.groomBirth}`);
+      setHtml('.about-person:nth-child(2) .about-list li:nth-child(1)', `<strong>${t.birth}</strong> ${t.brideBirth}`);
+      setText('.contact-open', t.contactOpen);
+      contactClose?.setAttribute('aria-label', `${t.contactOpen} ${currentLanguage === 'ko' ? '닫기' : '閉じる'}`);
+      setText('#contactTitle', t.contactOpen);
+      setText('.contact-dialog-subtitle', t.contactSubtitle);
+      setText('.contact-tab[data-contact-tab="groom"]', t.toGroom);
+      setText('.contact-tab[data-contact-tab="bride"]', t.toBride);
+      document.querySelector('.contact-tabs')?.setAttribute('aria-label', currentLanguage === 'ko' ? '축하 연락 대상' : 'お祝いの連絡先');
+      setText('[data-contact-panel="groom"] .contact-card:nth-child(1) .contact-card-role', t.groomRole);
+      setText('[data-contact-panel="groom"] .contact-card:nth-child(2) .contact-card-role', t.groomFather);
+      setText('[data-contact-panel="bride"] .contact-card:nth-child(1) .contact-card-role', t.brideRole);
+      setText('[data-contact-panel="bride"] .contact-card:nth-child(2) .contact-card-role', t.brideFather);
+      setText('[data-contact-panel="bride"] .contact-card:nth-child(3) .contact-card-role', t.brideMother);
+      contactCalls.forEach((button) => { button.textContent = t.call; });
+      setText('.timeline-subtitle', t.timelineSubtitle);
+      timelineItems.forEach((item, index) => {
+        const title = item.querySelector('strong');
+        if (title) title.textContent = t.timelineTitles[index] || title.textContent;
+      });
+      comicOverlay?.setAttribute('aria-label', t.comicLabel);
+      comicClose?.setAttribute('aria-label', t.comicClose);
+      document.querySelector('.gallery-grid')?.setAttribute('aria-label', t.galleryLabel);
+      galleryLightbox?.setAttribute('aria-label', t.galleryLightboxLabel);
+      galleryLightboxClose?.setAttribute('aria-label', t.galleryClose);
+      galleryItems.forEach((item, index) => item.setAttribute('aria-label', t.galleryItem(index)));
+      setText('.guess-kicker', t.guessKicker);
+      document.querySelectorAll('.guess-choice').forEach((choice) => {
+        choice.dataset.choiceLabel = t.choose;
+      });
+      document.querySelectorAll('.mbti-game').forEach((game) => {
+        const answer = game.dataset.answer || '';
+        const answerNode = game.querySelector('.mbti-answer');
+        if (answerNode) answerNode.textContent = t.mbtiAnswer(answer);
+        game.querySelectorAll('.mbti-rate-label').forEach((label) => {
+          label.textContent = t.responseRate;
+        });
+      });
+      setText('.gift-account h3', t.giftTitle);
+      setHtml('.gift-subtitle', t.giftSubtitle);
+      document.querySelector('.gift-account')?.setAttribute('aria-label', t.giftTitle);
+      setText('.gift-group:nth-child(1) .gift-toggle', t.giftGroom);
+      setText('.gift-group:nth-child(2) .gift-toggle', t.giftBride);
+      document.querySelectorAll('.gift-copy').forEach((button) => { button.textContent = t.copyAccount; });
+      setText('#giftToast', t.giftToast);
+      document.querySelector('.guest-message')?.setAttribute('aria-label', t.messageWrite);
+      setText('.guest-message-subtitle', t.messageSubtitle);
+      messagePagination?.setAttribute('aria-label', t.messagePageLabel);
+      setText('.message-write-open', t.messageWrite);
+      setText('#messageModalTitle', t.messageModalTitle);
+      setText('.message-dialog-subtitle', t.messageModalSubtitle);
+      messageName?.setAttribute('placeholder', t.namePlaceholder);
+      messagePassword?.setAttribute('placeholder', t.passwordPlaceholder);
+      messageBody?.setAttribute('placeholder', t.bodyPlaceholder);
+      messageClose?.setAttribute('aria-label', t.closeMessage);
+      setText('#messageForm .message-submit', t.messageSubmit);
+      setText('#messageDeleteTitle', t.messageDeleteTitle);
+      setText('.delete-message-note', t.messageDeleteNote);
+      setText('#messageDeleteAlert', t.messageDeleteAlert);
+      messageDeletePassword?.setAttribute('placeholder', t.passwordPlaceholder);
+      messageDeleteClose?.setAttribute('aria-label', t.closeDelete);
+      setText('#messageDeleteForm .message-submit', t.deleteSubmit);
+      setText('.signature', t.endingSignature);
+      setHtml('.copyright-note', `${t.copyright}<br /><span class="copyright-note-small">Copyright © 2026. All rights reserved.</span>`);
+      updateCountdown();
+      renderMessages();
+      scheduleCustomScrollbarUpdate();
+    };
 
     const setStableAppHeight = (force = false) => {
       const widthChanged = Math.abs(window.innerWidth - stableViewportWidth) > 24;
@@ -3911,7 +4333,7 @@
 
       sectionMenuToggle.classList.toggle('is-open', isOpen);
       sectionMenuToggle.setAttribute('aria-expanded', String(isOpen));
-      sectionMenuToggle.setAttribute('aria-label', isOpen ? '섹션 메뉴 닫기' : '섹션 메뉴 열기');
+      sectionMenuToggle.setAttribute('aria-label', isOpen ? getCopy('menuClose') : getCopy('menuOpen'));
       sectionMenuPanel.classList.toggle('is-open', isOpen);
     };
 
@@ -3920,6 +4342,9 @@
 
       const shouldShow = !introLocked && window.scrollY > 24;
       sectionMenuToggle.classList.toggle('is-visible', shouldShow);
+      languageButtons.forEach((button) => {
+        button.classList.toggle('is-visible', shouldShow);
+      });
       if (!shouldShow) setSectionMenuOpen(false);
     };
 
@@ -4005,8 +4430,8 @@
       countdownNodes.minutes.textContent = String(minutes);
       countdownNodes.seconds.textContent = String(seconds);
       countdownNodes.message.innerHTML = isAfterWedding
-        ? `병구 <b>♥</b> 지혜가 함께한 지 ${days}일째입니다.<span class="jp-text tight">ビョング ♥ ジヘが共に歩み始めて${days}日目です。</span>`
-        : `병구 <b>♥</b> 지혜의 결혼식이 ${days}일 남았습니다.<span class="jp-text tight">ビョング ♥ ジヘの結婚式まであと${days}日です。</span>`;
+        ? getCopy('countdownAfter')(days)
+        : getCopy('countdownBefore')(days);
     };
 
     let naverMapReadyAttempts = 0;
@@ -4148,7 +4573,7 @@
             option.classList.toggle('is-lower', Boolean(selected) && letterIndex !== leadingIndex);
             if (rateNode && letterIndex >= 0) {
               rateNode.innerHTML = selected
-                ? `<span class="mbti-rate-label">응답률</span><span class="mbti-rate-value">${rates[letterIndex]}%</span>`
+                ? `<span class="mbti-rate-label">${getCopy('responseRate')}</span><span class="mbti-rate-value">${rates[letterIndex]}%</span>`
                 : '';
             }
           });
@@ -4161,7 +4586,7 @@
           pairLetters.forEach((_, index) => renderPair(index));
           const answerNode = game.querySelector('.mbti-answer');
           if (answerNode) {
-            answerNode.innerHTML = `정답 : ${answer}<span class="jp-text tight">正解：${answer}</span>`;
+            answerNode.textContent = getCopy('mbtiAnswer')(answer);
           }
         };
 
@@ -4456,6 +4881,8 @@
         questionJp: 'Q1. ケンカしたら先に謝りそうな人は？',
         bride: '신랑이요! 은근 마음 약해서 먼저 다가올 것 같아요.',
         groom: '예, 제가 먼저 말 거는 편입니다.',
+        brideJp: '新郎です！実は優しくて、先に歩み寄ってくれそうです。',
+        groomJp: 'はい、僕が先に声をかけることが多いです。',
       },
       {
         id: 'sleep-in',
@@ -4463,6 +4890,8 @@
         questionJp: 'Q2. 結婚後、より寝坊しそうな人は？',
         bride: '신랑이요! 알람이 울려도 평온합니다.',
         groom: '부정하고 싶지만 주말엔 제가 맞습니다.',
+        brideJp: '新郎です！アラームが鳴ってもとても平和です。',
+        groomJp: '否定したいですが、週末は僕だと思います。',
       },
       {
         id: 'anniversary',
@@ -4470,6 +4899,8 @@
         questionJp: 'Q3. 記念日をたまに忘れそうな人は？',
         bride: '신랑이요! 그래도 들키면 바로 만회하려고 해요.',
         groom: '캘린더가 제 생명줄입니다.',
+        brideJp: '新郎です！でも気づいたらすぐ挽回しようとしてくれます。',
+        groomJp: 'カレンダーが僕の命綱です。',
       },
       {
         id: 'cute',
@@ -4477,6 +4908,8 @@
         questionJp: 'Q4. 甘えん坊なのはどっち？',
         bride: '신랑이요! 밖에서는 아닌 척해요.',
         groom: '저는 애교라기보다 생존형 리액션입니다.',
+        brideJp: '新郎です！外ではそうじゃないふりをしています。',
+        groomJp: '僕の場合、甘えというより生存型リアクションです。',
       },
       {
         id: 'chores',
@@ -4484,6 +4917,8 @@
         questionJp: 'Q5. 家事をきっちりこなせそうなのはどっち？',
         bride: '저요! 디테일은 제가 더 잘 봅니다.',
         groom: '인정합니다. 저는 큰일부터 맡겠습니다.',
+        brideJp: '私です！細かいところを見るのは得意です。',
+        groomJp: '認めます。僕は大きなことから担当します。',
       },
       {
         id: 'delivery',
@@ -4491,6 +4926,8 @@
         questionJp: 'Q6. デリバリーアプリをより頻繁に開きそうな人は？',
         bride: '신랑이요! 메뉴 고르는 속도도 빨라요.',
         groom: '맛있는 건 빠르게 결정해야 합니다.',
+        brideJp: '新郎です！メニューを決めるのも早いです。',
+        groomJp: 'おいしいものは早く決めるべきです。',
       },
       {
         id: 'secret-money',
@@ -4498,6 +4935,8 @@
         questionJp: 'Q7. こっそり「へそくり」を作ってそうなのはどっち？',
         bride: '신랑이요! 숨겨도 표정에 다 나올 것 같아요.',
         groom: '비상금보다 비상 간식을 숨길 것 같습니다.',
+        brideJp: '新郎です！隠しても表情に出そうです。',
+        groomJp: 'へそくりより非常用のおやつを隠しそうです。',
       },
       {
         id: 'zombie',
@@ -4505,6 +4944,8 @@
         questionJp: 'Q8. ゾンビが現れたとき、真っ先に逃げ出しそうなのはどっち？',
         bride: '저요! 일단 살아야 같이 작전도 짭니다.',
         groom: '저도 뛰겠습니다. 방향은 제가 보겠습니다.',
+        brideJp: '私です！まず生き残ってから一緒に作戦を立てます。',
+        groomJp: '僕も走ります。方向は僕が見ます。',
       },
       {
         id: 'island',
@@ -4512,6 +4953,8 @@
         questionJp: 'Q9. 無人島でより長く生き残りそうな人は？',
         bride: '신랑이요! 이상한 데서 생존력이 좋아요.',
         groom: '저는 불 피우고, 신부는 계획 세울 것 같아요.',
+        brideJp: '新郎です！意外なところで生存力があります。',
+        groomJp: '僕が火を起こして、新婦が計画を立てると思います。',
       },
       {
         id: 'nagging',
@@ -4519,6 +4962,8 @@
         questionJp: 'Q10. 結婚してから、小言が増えそうなのはどっち？',
         bride: '저요! 사랑이 담긴 잔소리입니다.',
         groom: '듣는 연습을 열심히 하겠습니다.',
+        brideJp: '私です！愛情のこもった小言です。',
+        groomJp: '聞く練習を一生懸命します。',
       },
     ];
 
@@ -4551,6 +4996,7 @@
         const rate = rates[person] || 0;
         choice.disabled = Boolean(selected);
         choice.classList.toggle('is-selected', selected === person);
+        choice.dataset.choiceLabel = getCopy('choose');
         choice.dataset.rate = `${rate}%`;
         const barFill = choice.querySelector('.guess-bar span');
         if (barFill) {
@@ -4569,15 +5015,15 @@
         </button>
         <div class="guess-panel">
           <div class="guess-panel-inner">
-            <button class="guess-choice" type="button" data-person="groom">
+            <button class="guess-choice" type="button" data-person="groom" data-choice-label="${getCopy('choose')}">
               <span aria-hidden="true">🤵</span><span class="guess-choice-label">신랑<span class="jp-text tight">新郎</span></span><span class="guess-bar"><span></span></span>
             </button>
-            <button class="guess-choice" type="button" data-person="bride">
+            <button class="guess-choice" type="button" data-person="bride" data-choice-label="${getCopy('choose')}">
               <span aria-hidden="true">👰</span><span class="guess-choice-label">신부<span class="jp-text tight">新婦</span></span><span class="guess-bar"><span></span></span>
             </button>
             <div class="guess-interview">
-              <p><strong>👰 신부</strong> ${item.bride}</p>
-              <p><strong>🤵 신랑</strong> ${item.groom}</p>
+              <p data-lang-pair-wrapped="true"><strong>👰 <span class="ko-text">신부</span><span class="jp-text tight">新婦</span></strong> <span class="ko-text">${item.bride}</span><span class="jp-text tight">${item.brideJp}</span></p>
+              <p data-lang-pair-wrapped="true"><strong>🤵 <span class="ko-text">신랑</span><span class="jp-text tight">新郎</span></strong> <span class="ko-text">${item.groom}</span><span class="jp-text tight">${item.groomJp}</span></p>
             </div>
           </div>
         </div>
@@ -4734,8 +5180,9 @@
 
       messageList.innerHTML = visibleMessages.map((message) => `
         <article class="message-card">
-          <button class="message-card-close" type="button" data-message-id="${escapeHtml(message.id)}" aria-label="메시지 삭제">×</button>
-          <p class="message-card-body">${escapeHtml(message.body)}</p>
+          <button class="message-card-close" type="button" data-message-id="${escapeHtml(message.id)}" aria-label="${escapeHtml(getCopy('deleteMessage'))}">×</button>
+          <p class="message-card-body is-collapsed">${escapeHtml(message.body)}</p>
+          <button class="message-expand" type="button" aria-expanded="false">${escapeHtml(getCopy('viewFullMessage'))}</button>
           <div class="message-card-meta">
             <span>From <span class="message-card-name">${escapeHtml(message.name)}</span></span>
             <time>${escapeHtml(message.createdAt)}</time>
@@ -4745,8 +5192,27 @@
 
       messagePagination.innerHTML = Array.from({ length: pageCount }, (_, index) => {
         const page = index + 1;
-        return `<button class="message-page${page === messagePage ? ' is-active' : ''}" type="button" data-message-page="${page}" aria-label="${page}페이지">${page}</button>`;
+        return `<button class="message-page${page === messagePage ? ' is-active' : ''}" type="button" data-message-page="${page}" aria-label="${escapeHtml(getCopy('pageLabel')(page))}">${page}</button>`;
       }).join('');
+
+      requestAnimationFrame(updateMessageOverflowControls);
+    };
+
+    const updateMessageOverflowControls = () => {
+      if (!messageList) return;
+
+      messageList.querySelectorAll('.message-card').forEach((card) => {
+        const body = card.querySelector('.message-card-body');
+        const expandButton = card.querySelector('.message-expand');
+        if (!body || !expandButton) return;
+
+        const isExpanded = expandButton.getAttribute('aria-expanded') === 'true';
+        body.classList.toggle('is-collapsed', !isExpanded);
+
+        const isOverflowing = body.scrollHeight > body.clientHeight + 1;
+        card.classList.toggle('has-overflow', isOverflowing || isExpanded);
+        expandButton.textContent = isExpanded ? getCopy('collapseMessage') : getCopy('viewFullMessage');
+      });
     };
 
     const openMessageModal = () => {
@@ -4884,6 +5350,17 @@
       });
 
       messageList?.addEventListener('click', (event) => {
+        const expandButton = event.target.closest('.message-expand');
+        if (expandButton) {
+          const card = expandButton.closest('.message-card');
+          const body = card?.querySelector('.message-card-body');
+          const shouldExpand = expandButton.getAttribute('aria-expanded') !== 'true';
+          expandButton.setAttribute('aria-expanded', String(shouldExpand));
+          body?.classList.toggle('is-collapsed', !shouldExpand);
+          expandButton.textContent = shouldExpand ? getCopy('collapseMessage') : getCopy('viewFullMessage');
+          return;
+        }
+
         const deleteButton = event.target.closest('.message-card-close');
         if (!deleteButton) return;
         pendingDeleteMessageId = deleteButton.dataset.messageId || null;
@@ -5038,8 +5515,8 @@
       const episode = timelineEpisodes[episodeIndex] || timelineEpisodes[0];
       if (!comicGrid) return;
       const navButtons = [
-        episodeIndex > 0 ? '<button class="comic-nav-button" type="button" data-comic-nav="prev">◀이전화</button>' : '',
-        episodeIndex < timelineEpisodes.length - 1 ? '<button class="comic-nav-button" type="button" data-comic-nav="next">다음화▶</button>' : '',
+        episodeIndex > 0 ? `<button class="comic-nav-button" type="button" data-comic-nav="prev">${currentLanguage === 'ko' ? '◀이전화' : '◀前の話'}</button>` : '',
+        episodeIndex < timelineEpisodes.length - 1 ? `<button class="comic-nav-button" type="button" data-comic-nav="next">${currentLanguage === 'ko' ? '다음화▶' : '次の話▶'}</button>` : '',
       ].join('');
       const episodeBody = episode.images
         ? `<div class="comic-image-strip">${episode.images.map((src, index) => `
@@ -5369,7 +5846,7 @@
 
     const setMusicState = (isPlaying) => {
       musicToggle.setAttribute('aria-pressed', String(isPlaying));
-      musicToggle.setAttribute('aria-label', isPlaying ? '배경음악 끄기' : '배경음악 켜기');
+      musicToggle.setAttribute('aria-label', isPlaying ? getCopy('musicOff') : getCopy('musicOn'));
     };
 
     const playBgm = () => {
@@ -5463,8 +5940,15 @@
     initGuessWho();
     initGiftAccounts();
     initGuestMessages();
+    applyLanguage(currentLanguage);
     loadNaverMap();
     window.setInterval(updateCountdown, 1000);
+
+    languageButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        applyLanguage(currentLanguage === 'ja' ? 'ko' : 'ja');
+      });
+    });
 
     contactOpen?.addEventListener('click', openContactOverlay);
     contactClose?.addEventListener('click', closeContactOverlay);
