@@ -2024,7 +2024,7 @@
       width: min(100%, 430px);
       max-height: min(88vh, 760px);
       overflow: auto;
-      padding: 46px 0 0;
+      padding: 0;
       border-radius: 8px;
       background: #20252a;
       box-shadow: 0 24px 60px rgba(24, 39, 55, .24);
@@ -2076,20 +2076,33 @@
       will-change: transform;
     }
 
+    .comic-header {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      height: 40px;
+      padding: 4px 8px;
+      background: rgba(32, 37, 42, .78);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+
     .comic-close {
-      position: absolute;
-      top: 12px;
-      right: 12px;
+      display: grid;
+      place-items: center;
       width: 32px;
       height: 32px;
+      padding: 0;
       border: 0;
       border-radius: 999px;
-      background: rgba(255,255,255,.92);
+      background: rgba(255, 255, 255, .68);
       color: #405367;
       font-size: 28px;
       line-height: 1;
       cursor: pointer;
-      z-index: 2;
     }
 
     .comic-grid {
@@ -3653,7 +3666,9 @@
 
     <div class="comic-overlay" id="comicOverlay" role="dialog" aria-modal="true" aria-label="우리의 연애 웹툰" hidden>
       <div class="comic-dialog">
-        <button class="comic-close" type="button" aria-label="웹툰 닫기">×</button>
+        <div class="comic-header">
+          <button class="comic-close" type="button" aria-label="웹툰 닫기">×</button>
+        </div>
         <div class="comic-grid" id="comicGrid"></div>
       </div>
       <div class="comic-scroll-indicator" id="comicScrollIndicator" aria-hidden="true">
