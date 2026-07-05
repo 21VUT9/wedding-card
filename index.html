@@ -779,16 +779,30 @@
     }
 
     body[data-lang="ja"] .jp-text {
-      display: block;
+      display: inline;
       margin-top: 0;
       color: inherit;
+      font-family: inherit;
       font-size: 1em;
+      font-weight: inherit;
       line-height: inherit;
+      letter-spacing: inherit;
+      text-transform: inherit;
+      word-break: inherit;
     }
 
     body[data-lang="ja"] .jp-text.tight {
       font-size: 1em;
+      font-weight: inherit;
       line-height: inherit;
+    }
+
+    body[data-lang="ja"] .jp-text.block {
+      display: block;
+    }
+
+    body[data-lang="ja"] .jp-text.soft {
+      color: rgba(36, 52, 71, .48);
     }
 
     .jp-text.tight {
@@ -3469,12 +3483,12 @@
           </h4>
           <ul class="about-list">
             <li><strong>출생</strong> 95년 8월</li>
-            <li><strong>취미</strong> 클라이밍<span class="jp-text tight">趣味：クライミング</span></li>
-            <li><strong>특징</strong> 압도적 기억력<span class="jp-text tight">特徴：抜群の記憶力</span></li>
-            <li><strong>TMI</strong> 야구 알려줌 ▶<span class="jp-text tight">TMI：野球を教えてくれた ▶</span></li>
+            <li><strong>취미</strong> 클라이밍<span class="jp-text tight"><strong>趣味</strong> クライミング</span></li>
+            <li><strong>특징</strong> 압도적 기억력<span class="jp-text tight"><strong>特徴</strong> 抜群の記憶力</span></li>
+            <li><strong>TMI</strong> 야구 알려줌 ▶<span class="jp-text tight"><strong>TMI</strong> 野球を教えてくれた ▶</span></li>
           </ul>
           <div class="mbti-game" data-mbti-id="groom" data-answer="ENTJ" data-seed="38,62|58,42|57,43|55,45">
-            <p class="mbti-game-title"><strong>MBTI</strong><br />맞춰보기<span class="jp-text tight">MBTIを当ててみてね！</span></p>
+            <p class="mbti-game-title"><strong>MBTI</strong><br />맞춰보기<span class="jp-text tight"><strong>MBTI</strong>を当ててみてね！</span></p>
             <div class="mbti-options" aria-label="문병구 MBTI 맞춰보기">
               <div class="mbti-pair">
                 <button class="mbti-option" type="button" data-pair="0" data-letter="I"><span class="mbti-letter">I</span><span class="mbti-rate"></span></button>
@@ -3507,12 +3521,12 @@
           </h4>
           <ul class="about-list">
             <li><strong>출생</strong> 95년 10월</li>
-            <li><strong>취미</strong> 2번 박성한<span class="jp-text tight">趣味：背番号2番のパク・ソンハン</span></li>
-            <li><strong>특징</strong> 내향인인데 낯안가림<span class="jp-text tight">特徴：内向型だけど人見知りしない</span></li>
-            <li><strong>TMI</strong> ◀ 보다 야구 좋아함<span class="jp-text tight">TMI：◀ 彼より野球にハマってる</span></li>
+            <li><strong>취미</strong> 2번 박성한<span class="jp-text tight"><strong>趣味</strong> 背番号2番のパク・ソンハン</span></li>
+            <li><strong>특징</strong> 내향인인데 낯안가림<span class="jp-text tight"><strong>特徴</strong> 内向型だけど人見知りしない</span></li>
+            <li><strong>TMI</strong> ◀ 보다 야구 좋아함<span class="jp-text tight"><strong>TMI</strong> ◀ 彼より野球にハマってる</span></li>
           </ul>
           <div class="mbti-game" data-mbti-id="bride" data-answer="INTP" data-seed="64,36|45,55|51,49|40,60">
-            <p class="mbti-game-title"><strong>MBTI</strong><br />맞춰보기<span class="jp-text tight">MBTIを当ててみてね！</span></p>
+            <p class="mbti-game-title"><strong>MBTI</strong><br />맞춰보기<span class="jp-text tight"><strong>MBTI</strong>を当ててみてね！</span></p>
             <div class="mbti-options" aria-label="곽지혜 MBTI 맞춰보기">
               <div class="mbti-pair">
                 <button class="mbti-option" type="button" data-pair="0" data-letter="I"><span class="mbti-letter">I</span><span class="mbti-rate"></span></button>
@@ -4199,6 +4213,29 @@
       });
     };
 
+    const syncAboutPersonRows = () => {
+      const people = Array.from(document.querySelectorAll('.about-person'));
+      if (people.length < 2) return;
+
+      const rowSelectors = [
+        '.about-name',
+        '.about-list li:nth-child(1)',
+        '.about-list li:nth-child(2)',
+        '.about-list li:nth-child(3)',
+        '.about-list li:nth-child(4)',
+      ];
+
+      const rows = rowSelectors.map((selector) =>
+        people.map((person) => person.querySelector(selector)).filter(Boolean)
+      );
+
+      rows.flat().forEach((row) => { row.style.minHeight = ''; });
+      rows.forEach((row) => {
+        const maxHeight = Math.max(...row.map((item) => item.getBoundingClientRect().height));
+        row.forEach((item) => { item.style.minHeight = `${maxHeight}px`; });
+      });
+    };
+
     const applyLanguage = (lang = currentLanguage) => {
       currentLanguage = lang === 'ja' ? 'ja' : 'ko';
       localStorage.setItem(languageStorageKey, currentLanguage);
@@ -4251,7 +4288,12 @@
       setText('.about-kicker', t.aboutKicker);
       setText('.about-person:nth-child(1) .about-role', t.groomRole);
       setText('.about-person:nth-child(2) .about-role', t.brideRole);
-      setHtml('.about-person:nth-child(1) .about-family', currentLanguage === 'ko' ? '문철주<img class="about-flower" src="images/wf.png" alt="고" />전은아의 아들' : t.groomFamily);
+      setHtml(
+        '.about-person:nth-child(1) .about-family',
+        currentLanguage === 'ko'
+          ? '문철주<img class="about-flower" src="images/wf.png" alt="고" />전은아의 아들'
+          : 'ムン・チョルジュ、<img class="about-flower" src="images/wf.png" alt="故" />チョン・ウナの息子'
+      );
       setText('.about-person:nth-child(2) .about-family', t.brideFamily);
       setHtml('.about-person:nth-child(1) .about-list li:nth-child(1)', `<strong>${t.birth}</strong> ${t.groomBirth}`);
       setHtml('.about-person:nth-child(2) .about-list li:nth-child(1)', `<strong>${t.birth}</strong> ${t.brideBirth}`);
@@ -4320,7 +4362,15 @@
       updateCountdown();
       renderMessages();
       scheduleCustomScrollbarUpdate();
+      window.requestAnimationFrame(syncAboutPersonRows);
     };
+
+    let aboutRowsResizeFrame = 0;
+    window.addEventListener('resize', () => {
+      window.cancelAnimationFrame(aboutRowsResizeFrame);
+      aboutRowsResizeFrame = window.requestAnimationFrame(syncAboutPersonRows);
+    });
+    document.fonts?.ready.then(syncAboutPersonRows);
 
     const setStableAppHeight = (force = false) => {
       const widthChanged = Math.abs(window.innerWidth - stableViewportWidth) > 24;
@@ -4910,91 +4960,96 @@
         id: 'apologize',
         question: 'Q1. 싸우면 먼저 사과할 것 같은 사람은?',
         questionJp: 'Q1. ケンカしたら先に謝りそうな人は？',
-        bride: '신랑이요! 은근 마음 약해서 먼저 다가올 것 같아요.',
-        groom: '예, 제가 먼저 말 거는 편입니다.',
-        brideJp: '新郎です！実は優しくて、先に歩み寄ってくれそうです。',
-        groomJp: 'はい、僕が先に声をかけることが多いです。',
+        bride: '신랑이요! 뱅구가 마음이 넓어서 먼저 사과 할 것 같아요.',
+        groom: '네. 그럴것 같아요.',
+        brideJp: '新郎です！ビョングは心が広いので、先に謝ってくれそうです。',
+        groomJp: 'はい。そうだと思います。',
       },
       {
         id: 'sleep-in',
+        answerOrder: ['groom', 'bride'],
         question: 'Q2. 결혼 후 더 늦잠을 잘 것 같은 사람은?',
         questionJp: 'Q2. 結婚後、より寝坊しそうな人は？',
-        bride: '신랑이요! 알람이 울려도 평온합니다.',
-        groom: '부정하고 싶지만 주말엔 제가 맞습니다.',
-        brideJp: '新郎です！アラームが鳴ってもとても平和です。',
-        groomJp: '否定したいですが、週末は僕だと思います。',
+        bride: '부정하고 싶지만 쉬는날은 제가 맞습니다.',
+        groom: '지혜요! 잘 때 업어가도 모를 것 같아요.',
+        brideJp: '否定したいですが、休みの日は私だと思います。',
+        groomJp: 'ジヘです！寝ている間に背負って連れていかれても気づかなさそうです。',
       },
       {
         id: 'anniversary',
         question: 'Q3. 기념일을 종종 깜빡할 것 같은 사람은?',
         questionJp: 'Q3. 記念日をたまに忘れそうな人は？',
-        bride: '신랑이요! 그래도 들키면 바로 만회하려고 해요.',
-        groom: '캘린더가 제 생명줄입니다.',
-        brideJp: '新郎です！でも気づいたらすぐ挽回しようとしてくれます。',
-        groomJp: 'カレンダーが僕の命綱です。',
+        bride: '저요. 제가 이런거에 무심해요.',
+        groom: '저도 캘린더가 제 생명줄입니다.',
+        brideJp: '私です。こういうことには無頓着です。',
+        groomJp: '僕もカレンダーが命綱です。',
       },
       {
         id: 'cute',
         question: 'Q4. 애교가 더 많을 것 같은 사람은?',
         questionJp: 'Q4. 甘えん坊なのはどっち？',
-        bride: '신랑이요! 밖에서는 아닌 척해요.',
+        bride: '신랑이요! 밖에서는 아닌척해요.',
         groom: '저는 애교라기보다 생존형 리액션입니다.',
         brideJp: '新郎です！外ではそうじゃないふりをしています。',
         groomJp: '僕の場合、甘えというより生存型リアクションです。',
       },
       {
         id: 'chores',
+        answerOrder: ['groom', 'bride'],
         question: 'Q5. 집안일을 더 꼼꼼하게 할 것 같은 사람은?',
         questionJp: 'Q5. 家事をきっちりこなせそうなのはどっち？',
-        bride: '저요! 디테일은 제가 더 잘 봅니다.',
-        groom: '인정합니다. 저는 큰일부터 맡겠습니다.',
-        brideJp: '私です！細かいところを見るのは得意です。',
-        groomJp: '認めます。僕は大きなことから担当します。',
+        bride: '제가 신랑보다는 잘할 것 같습니다.',
+        groom: '저는 제 방 하나도 제대로 정리 못합니다.',
+        brideJp: '私のほうが新郎よりは上手だと思います。',
+        groomJp: '僕は自分の部屋ひとつもまともに片づけられません。',
       },
       {
         id: 'delivery',
         question: 'Q6. 배달앱을 더 자주 켤 것 같은 사람은?',
         questionJp: 'Q6. デリバリーアプリをより頻繁に開きそうな人は？',
-        bride: '신랑이요! 메뉴 고르는 속도도 빨라요.',
-        groom: '맛있는 건 빠르게 결정해야 합니다.',
-        brideJp: '新郎です！メニューを決めるのも早いです。',
-        groomJp: 'おいしいものは早く決めるべきです。',
+        bride: '신랑이요! 병구는 먹을거에 진심입니다.',
+        groom: '신부요! 제가 뭐 먹고싶으면 지혜한테 배달시킵니다.',
+        brideJp: '新郎です！ビョングは食べることに本気です。',
+        groomJp: '新婦です！僕が何か食べたいときは、ジヘにデリバリーを頼んでもらいます。',
       },
       {
         id: 'secret-money',
+        answerOrder: ['groom', 'bride'],
         question: 'Q7. 비상금을 몰래 숨겨둘 것 같은 사람은?',
         questionJp: 'Q7. こっそり「へそくり」を作ってそうなのはどっち？',
-        bride: '신랑이요! 숨겨도 표정에 다 나올 것 같아요.',
-        groom: '비상금보다 비상 간식을 숨길 것 같습니다.',
-        brideJp: '新郎です！隠しても表情に出そうです。',
-        groomJp: 'へそくりより非常用のおやつを隠しそうです。',
+        bride: '저요! 야구 유니폼을 살려면 병구 몰래 열심히 모아야해요.',
+        groom: '지혜가 비상금 숨기고 표정을 못숨길 것 같은데요?',
+        brideJp: '私です！野球のユニフォームを買うために、ビョングに内緒で頑張って貯めないと。',
+        groomJp: 'ジヘはへそくりを隠しても、表情までは隠せなさそうですけど？',
       },
       {
         id: 'zombie',
+        answerOrder: ['groom', 'bride'],
         question: 'Q8. 좀비가 나타나면 가장 먼저 도망칠 사람은?',
         questionJp: 'Q8. ゾンビが現れたとき、真っ先に逃げ出しそうなのはどっち？',
-        bride: '저요! 일단 살아야 같이 작전도 짭니다.',
-        groom: '저도 뛰겠습니다. 방향은 제가 보겠습니다.',
-        brideJp: '私です！まず生き残ってから一緒に作戦を立てます。',
-        groomJp: '僕も走ります。方向は僕が見ます。',
+        bride: '저요. 일단 좀비가 된 신랑이 쫓아오기전에 최대한 멀리 가야해요. (진짜 빨라요)',
+        groom: '신부요. 저는 제가 좀비가 된 척 신부 쫓아갈거에요.',
+        brideJp: '私です。まずはゾンビになった新郎に追いつかれる前に、できるだけ遠くへ逃げないと。（本当に速いです）',
+        groomJp: '新婦です。僕はゾンビになったふりをして、新婦を追いかけます。',
       },
       {
         id: 'island',
+        answerOrder: ['groom', 'bride'],
         question: 'Q9. 무인도에서 더 오래 살아남을 것 같은 사람은?',
         questionJp: 'Q9. 無人島でより長く生き残りそうな人は？',
-        bride: '신랑이요! 이상한 데서 생존력이 좋아요.',
-        groom: '저는 불 피우고, 신부는 계획 세울 것 같아요.',
-        brideJp: '新郎です！意外なところで生存力があります。',
-        groomJp: '僕が火を起こして、新婦が計画を立てると思います。',
+        bride: '신랑이요! 신랑이 생존력 만렙입니다.',
+        groom: '저요! 생존력 만렙입니다.',
+        brideJp: '新郎です！新郎はサバイバル力がレベルMAXです。',
+        groomJp: '僕です！サバイバル力はレベルMAXです。',
       },
       {
         id: 'nagging',
         question: 'Q10. 결혼 후 더 잔소리를 많이 할 것 같은 사람은?',
         questionJp: 'Q10. 結婚してから、小言が増えそうなのはどっち？',
-        bride: '저요! 사랑이 담긴 잔소리입니다.',
-        groom: '듣는 연습을 열심히 하겠습니다.',
-        brideJp: '私です！愛情のこもった小言です。',
-        groomJp: '聞く練習を一生懸命します。',
+        bride: '신랑이요! 평소에도 이미 많이해요.',
+        groom: '제가 좀 예민한편 같아요.',
+        brideJp: '新郎です！普段からもうたくさん言っています。',
+        groomJp: '僕はちょっと神経質なほうだと思います。',
       },
     ];
 
@@ -5036,6 +5091,14 @@
       });
     };
 
+    const buildGuessAnswer = (item, person) => {
+      const isBride = person === 'bride';
+      const icon = isBride ? '👰' : '🤵';
+      const labelKo = isBride ? '신부' : '신랑';
+      const labelJp = isBride ? '新婦' : '新郎';
+      return `<p data-lang-pair-wrapped="true"><strong>${icon} <span class="ko-text">${labelKo}</span><span class="jp-text tight">${labelJp}</span></strong> <span class="ko-text">${item[person]}</span><span class="jp-text tight">${item[`${person}Jp`]}</span></p>`;
+    };
+
     const buildGuessCard = (item, index) => `
       <article class="guess-card" data-guess-id="${item.id}">
         <button class="guess-question" type="button" aria-expanded="false">
@@ -5053,8 +5116,7 @@
               <span aria-hidden="true">👰</span><span class="guess-choice-label">신부<span class="jp-text tight">新婦</span></span><span class="guess-bar"><span></span></span>
             </button>
             <div class="guess-interview">
-              <p data-lang-pair-wrapped="true"><strong>👰 <span class="ko-text">신부</span><span class="jp-text tight">新婦</span></strong> <span class="ko-text">${item.bride}</span><span class="jp-text tight">${item.brideJp}</span></p>
-              <p data-lang-pair-wrapped="true"><strong>🤵 <span class="ko-text">신랑</span><span class="jp-text tight">新郎</span></strong> <span class="ko-text">${item.groom}</span><span class="jp-text tight">${item.groomJp}</span></p>
+              ${(item.answerOrder || ['bride', 'groom']).map((person) => buildGuessAnswer(item, person)).join('')}
             </div>
           </div>
         </div>
