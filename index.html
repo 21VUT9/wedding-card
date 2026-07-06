@@ -1846,6 +1846,21 @@
       letter-spacing: 0;
     }
 
+    .mbti-total {
+      display: none;
+      margin: 1px 0 0;
+      color: #8ea0af;
+      font-size: 8px;
+      font-weight: 500;
+      line-height: 1.3;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .mbti-pair.has-voted .mbti-total {
+      display: block;
+    }
+
     .mbti-game.has-voted .mbti-rate {
       opacity: 1;
     }
@@ -2618,6 +2633,21 @@
       border-radius: inherit;
       background: linear-gradient(90deg, #79abc3, #b9d5e4);
       transition: width .35s ease;
+    }
+
+    .guess-response-total {
+      display: none;
+      margin: 0;
+      color: #7d96a8;
+      font-family: 'Noto Sans KR', Georgia, 'Times New Roman', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      line-height: 1.4;
+      text-align: right;
+    }
+
+    .guess-card.has-voted .guess-response-total {
+      display: block;
     }
 
     .guess-interview {
@@ -4066,6 +4096,7 @@
         guessKicker: '모두 함께하는 신랑 신부 문답 인터뷰!',
         choose: '선택',
         responseRate: '응답률',
+        totalRespondents: (count) => `총 ${count}명`,
         giftTitle: '마음 전하실 곳',
         giftSubtitle: '참석이 어려우신 분들을 위해 기재했습니다<br>너그러운 마음으로 양해 부탁드립니다',
         giftGroom: '신랑측에게',
@@ -4155,6 +4186,7 @@
         guessKicker: 'みんなで楽しむ新郎新婦Q&A!',
         choose: '選択',
         responseRate: '回答率',
+        totalRespondents: (count) => `回答者 ${count}名`,
         giftTitle: 'お心遣い',
         giftSubtitle: 'ご出席が難しい方のために記載しております<br>温かいお気持ちでご理解いただけますと幸いです',
         giftGroom: '新郎側へ',
@@ -4324,6 +4356,9 @@
       setText('.guess-kicker', t.guessKicker);
       document.querySelectorAll('.guess-choice').forEach((choice) => {
         choice.dataset.choiceLabel = t.choose;
+      });
+      document.querySelectorAll('.guess-response-total, .mbti-total').forEach((total) => {
+        total.textContent = t.totalRespondents(Number(total.dataset.count) || 0);
       });
       document.querySelectorAll('.mbti-game').forEach((game) => {
         const answer = game.dataset.answer || '';
@@ -4637,12 +4672,26 @@
 
         const renderPair = (pairIndex) => {
           const pairOptions = options.filter((option) => Number(option.dataset.pair) === pairIndex);
+          const pair = pairOptions[0]?.closest('.mbti-pair');
           const selected = votes[pairIndex];
           const letters = pairLetters[pairIndex];
           const totals = letters.map((letter) => Number(counts[letter]) || 0);
-          const sum = Math.max(totals[0] + totals[1], 1);
-          const rates = totals.map((value) => Math.round((value / sum) * 100));
+          const respondentCount = totals[0] + totals[1];
+          const rateBase = Math.max(respondentCount, 1);
+          const rates = totals.map((value) => Math.round((value / rateBase) * 100));
           const leadingIndex = rates[0] >= rates[1] ? 0 : 1;
+
+          pair?.classList.toggle('has-voted', Boolean(selected));
+          let totalNode = pair?.querySelector('.mbti-total');
+          if (pair && !totalNode) {
+            totalNode = document.createElement('p');
+            totalNode.className = 'mbti-total';
+            pair.appendChild(totalNode);
+          }
+          if (totalNode) {
+            totalNode.dataset.count = String(respondentCount);
+            totalNode.textContent = getCopy('totalRespondents')(respondentCount);
+          }
 
           pairOptions.forEach((option) => {
             const letter = option.dataset.letter;
@@ -5075,6 +5124,7 @@
         effectiveCounts[selected] = 1;
       }
       const rates = getGuessRates(effectiveCounts);
+      const total = (Number(effectiveCounts.groom) || 0) + (Number(effectiveCounts.bride) || 0);
       card.classList.toggle('has-voted', Boolean(selected));
 
       card.querySelectorAll('.guess-choice').forEach((choice) => {
@@ -5089,6 +5139,12 @@
           barFill.style.setProperty('--rate', `${rate}%`);
         }
       });
+
+      const totalNode = card.querySelector('.guess-response-total');
+      if (totalNode) {
+        totalNode.dataset.count = String(total);
+        totalNode.textContent = getCopy('totalRespondents')(total);
+      }
     };
 
     const buildGuessAnswer = (item, person) => {
@@ -5115,6 +5171,7 @@
             <button class="guess-choice" type="button" data-person="bride" data-choice-label="${getCopy('choose')}">
               <span aria-hidden="true">👰</span><span class="guess-choice-label">신부<span class="jp-text tight">新婦</span></span><span class="guess-bar"><span></span></span>
             </button>
+            <p class="guess-response-total" data-count="0">${getCopy('totalRespondents')(0)}</p>
             <div class="guess-interview">
               ${(item.answerOrder || ['bride', 'groom']).map((person) => buildGuessAnswer(item, person)).join('')}
             </div>
