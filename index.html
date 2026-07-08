@@ -2049,6 +2049,8 @@
     }
 
     .comic-dialog {
+      --comic-zoom: 1;
+      --comic-zoom-width: 100%;
       position: relative;
       width: min(100%, 430px);
       max-height: min(88vh, 760px);
@@ -2061,6 +2063,7 @@
       transition: transform .25s ease;
       scrollbar-width: none;
       -ms-overflow-style: none;
+      touch-action: pan-x pan-y;
     }
 
     .comic-dialog::-webkit-scrollbar {
@@ -2137,6 +2140,8 @@
     .comic-grid {
       display: grid;
       gap: 0;
+      width: var(--comic-zoom-width);
+      max-width: none;
       background: #101418;
     }
 
@@ -2875,11 +2880,13 @@
     .message-list {
       display: grid;
       gap: 12px;
+      min-width: 0;
       text-align: left;
     }
 
     .message-card {
       position: relative;
+      min-width: 0;
       padding: 18px 18px 16px;
       border-radius: 5px;
       background: #fff;
@@ -2908,7 +2915,8 @@
       font-weight: 700;
       line-height: 1.65;
       white-space: pre-wrap;
-      word-break: keep-all;
+      overflow-wrap: anywhere;
+      word-break: break-word;
       user-select: text;
       -webkit-user-select: text;
     }
@@ -2942,7 +2950,9 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      flex-wrap: wrap;
       gap: 12px;
+      min-width: 0;
       color: #8ea0af;
       font-size: 10px;
       line-height: 1.3;
@@ -2950,15 +2960,22 @@
       -webkit-user-select: text;
     }
 
+    .message-card-meta > span,
+    .message-card-meta time {
+      min-width: 0;
+    }
+
     .message-card-name {
       color: #6e9bb1;
       font-style: italic;
+      overflow-wrap: anywhere;
     }
 
     .message-pagination {
       display: flex;
       align-items: center;
       justify-content: center;
+      flex-wrap: wrap;
       gap: 8px;
       min-height: 30px;
       margin: 18px 0 0;
@@ -5642,6 +5659,61 @@
 
     let activeComicEpisodeIndex = 0;
     let comicScrollTimer;
+    let comicZoom = 1;
+    let comicPinchStartDistance = 0;
+    let comicPinchStartZoom = 1;
+    let comicPinchAnchorX = 0;
+    let comicPinchAnchorY = 0;
+    const comicMinZoom = 1;
+    const comicMaxZoom = 2.6;
+
+    const clampComicZoom = (value) => Math.min(Math.max(value, comicMinZoom), comicMaxZoom);
+
+    const setComicZoom = (value, options = {}) => {
+      if (!comicDialog) return;
+      const previousZoom = comicZoom;
+      const nextZoom = clampComicZoom(Math.round(value * 100) / 100);
+      if (Math.abs(nextZoom - previousZoom) < .01 && !options.resetScroll && !options.focal) return;
+
+      const leftRatio = comicDialog.scrollWidth > comicDialog.clientWidth
+        ? (comicDialog.scrollLeft + comicDialog.clientWidth / 2) / comicDialog.scrollWidth
+        : .5;
+      const topRatio = comicDialog.scrollHeight > comicDialog.clientHeight
+        ? (comicDialog.scrollTop + comicDialog.clientHeight / 2) / comicDialog.scrollHeight
+        : 0;
+
+      comicZoom = nextZoom;
+      comicDialog.style.setProperty('--comic-zoom', String(comicZoom));
+      comicDialog.style.setProperty('--comic-zoom-width', `${comicZoom * 100}%`);
+
+      requestAnimationFrame(() => {
+        if (options.resetScroll) {
+          comicDialog.scrollLeft = 0;
+          comicDialog.scrollTop = 0;
+        } else if (options.focal) {
+          const rect = comicDialog.getBoundingClientRect();
+          comicDialog.scrollLeft = Math.max((options.focal.anchorX * comicZoom) - (options.focal.clientX - rect.left), 0);
+          comicDialog.scrollTop = Math.max((options.focal.anchorY * comicZoom) - (options.focal.clientY - rect.top), 0);
+        } else {
+          comicDialog.scrollLeft = Math.max((comicDialog.scrollWidth * leftRatio) - comicDialog.clientWidth / 2, 0);
+          comicDialog.scrollTop = Math.max((comicDialog.scrollHeight * topRatio) - comicDialog.clientHeight / 2, 0);
+        }
+        updateComicScrollIndicator(true);
+      });
+    };
+
+    const getComicTouchDistance = (touches) => {
+      const [first, second] = touches;
+      return Math.hypot(first.clientX - second.clientX, first.clientY - second.clientY);
+    };
+
+    const getComicTouchCenter = (touches) => {
+      const [first, second] = touches;
+      return {
+        x: (first.clientX + second.clientX) / 2,
+        y: (first.clientY + second.clientY) / 2,
+      };
+    };
 
     const hideComicScrollIndicator = () => {
       comicScrollIndicator?.classList.remove('is-visible');
@@ -5713,7 +5785,13 @@
       activeComicEpisodeIndex = Math.min(Math.max(Number(episodeIndex) || 0, 0), timelineEpisodes.length - 1);
       renderComicEpisode(activeComicEpisodeIndex);
       comicOverlay.hidden = false;
-      if (comicDialog) comicDialog.scrollTop = 0;
+      comicZoom = 1;
+      if (comicDialog) {
+        comicDialog.style.setProperty('--comic-zoom', String(comicZoom));
+        comicDialog.style.setProperty('--comic-zoom-width', '100%');
+        comicDialog.scrollLeft = 0;
+        comicDialog.scrollTop = 0;
+      }
       requestAnimationFrame(() => {
         comicOverlay.classList.add('is-open');
         updateComicScrollIndicator(false);
@@ -5738,6 +5816,39 @@
     const initTimeline = () => {
       comicDialog?.addEventListener('scroll', () => {
         updateComicScrollIndicator(true);
+      }, { passive: true });
+
+      comicDialog?.addEventListener('touchstart', (event) => {
+        if (event.touches.length !== 2 || !comicDialog) return;
+        const rect = comicDialog.getBoundingClientRect();
+        const center = getComicTouchCenter(event.touches);
+        comicPinchStartDistance = getComicTouchDistance(event.touches);
+        comicPinchStartZoom = comicZoom;
+        comicPinchAnchorX = (comicDialog.scrollLeft + center.x - rect.left) / comicZoom;
+        comicPinchAnchorY = (comicDialog.scrollTop + center.y - rect.top) / comicZoom;
+      }, { passive: true });
+
+      comicDialog?.addEventListener('touchmove', (event) => {
+        if (event.touches.length !== 2 || !comicPinchStartDistance) return;
+        event.preventDefault();
+        const center = getComicTouchCenter(event.touches);
+        const distance = getComicTouchDistance(event.touches);
+        setComicZoom(comicPinchStartZoom * (distance / comicPinchStartDistance), {
+          focal: {
+            anchorX: comicPinchAnchorX,
+            anchorY: comicPinchAnchorY,
+            clientX: center.x,
+            clientY: center.y,
+          },
+        });
+      }, { passive: false });
+
+      comicDialog?.addEventListener('touchend', (event) => {
+        if (event.touches.length >= 2) return;
+        comicPinchStartDistance = 0;
+        comicPinchStartZoom = comicZoom;
+        comicPinchAnchorX = 0;
+        comicPinchAnchorY = 0;
       }, { passive: true });
 
       comicGrid?.addEventListener('click', (event) => {
